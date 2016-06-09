@@ -20,13 +20,16 @@
         <li><a href="#bench-2">[] (symbol (quote foo))</a></li>
       </ul>
       <hr>
-      <div>
-        <a id="bench-1">
-        </a>
+      <h2>Charts</h2>
+      <div id="bench-1">
+        <h4>[x 1] (identity x)</h4>
+        <div id="chart-1">
+        </div>
       </div>
-      <div>
-        <a id="bench-2">
-        </a>
+      <div id="bench-2">
+        <h4>[] (symbol (quote foo))</h4>
+        <div id="chart-2">
+        </div>
       </div>
     </div>
 
@@ -50,7 +53,7 @@
         });
 
         c3.generate({
-          bindto: "#bench-"+id,
+          bindto: "#chart-"+id,
           data: data,
           axis: {x: {type: 'category', label: "Version"},
                  y: {label: "Time"}}});
