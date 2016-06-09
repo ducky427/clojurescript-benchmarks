@@ -53,6 +53,7 @@ def benchmark(writer, version):
         else:
             assert engine is not None, "No engine found!"
             if "||" not in line:
+                print line
                 continue
             try:
                 title, stats = get_stats(line)
