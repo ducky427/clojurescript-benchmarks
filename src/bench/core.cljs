@@ -21,6 +21,20 @@
 (defn init!
   []
   (benchmark-suite [x 1] (identity x))
-  (benchmark-suite [] (symbol 'foo)))
+
+  ;; Symbol contruction
+  (benchmark-suite [] (symbol 'foo))
+
+  ;; array-reduce & ci-reduce
+  (let [arr  (array)
+        sum  (fn [a b] (+ a b))]
+    (dotimes [i 10000]
+      (.push arr i))
+    (benchmark-suite [coll (seq arr)] (ci-reduce coll + 0))
+    (benchmark-suite [coll (seq arr)] (ci-reduce coll sum 0))
+    (benchmark-suite [coll arr] (ci-reduce coll + 0))
+    (benchmark-suite [coll arr] (ci-reduce coll sum 0)))
+
+  )
 
 (init!)

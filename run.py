@@ -3,6 +3,7 @@ import csv
 import os
 import subprocess
 import sys
+import time
 
 from collections import defaultdict
 
@@ -11,6 +12,8 @@ from collections import defaultdict
 versions = ['1.9.36', '1.9.35', '1.9.14', '1.8.51', '1.8.40', '1.8.34',
             '1.7.228', '1.7.189', '1.7.170', '1.7.166',
             '1.7.58', '1.7.48',  '1.7.28', '1.7.10']
+
+#versions = ['1.9.36']
 
 def get_stats(line):
     parts = line.split("||")
@@ -62,7 +65,8 @@ def main(writer):
         benchmark(writer, v)
 
 if __name__ == '__main__':
-    with open('data.csv', 'wb') as f:
+    filename = 'data_{0}.csv'.format(time.strftime("%Y%m%d_%H%M%S"))
+    with open(filename, 'wb') as f:
         writer = csv.writer(f)
         writer.writerow(["Version", "Engine", "Name", "Mean", "Deviation", "MOE", "RME", "SEM"])
         main(writer)
