@@ -6,8 +6,8 @@ items = ["[x 1] (identity x)",
          "[] (symbol (quote foo))",
          "[coll (seq arr)] (ci-reduce coll + 0)",
          "[coll (seq arr)] (ci-reduce coll sum 0)",
-         "[coll arr] (ci-reduce coll + 0)",
-         "[coll arr] (ci-reduce coll sum 0)"]
+         "[coll arr] (array-reduce coll + 0)",
+         "[coll arr] (array-reduce coll sum 0)"]
 
 def main():
     env = Environment(loader=FileSystemLoader('.'))
