@@ -32,8 +32,8 @@
       (.push arr i))
     (benchmark-suite [coll (seq arr)] (ci-reduce coll + 0))
     (benchmark-suite [coll (seq arr)] (ci-reduce coll sum 0))
-    (benchmark-suite [coll arr] (ci-reduce coll + 0))
-    (benchmark-suite [coll arr] (ci-reduce coll sum 0)))
+    (benchmark-suite [coll arr] (array-reduce coll + 0))
+    (benchmark-suite [coll arr] (array-reduce coll sum 0)))
 
   )
 

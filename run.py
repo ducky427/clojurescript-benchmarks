@@ -59,8 +59,9 @@ def benchmark(writer, version):
                 print sys.exc_info()[0]
 
 def main(writer):
-    for v in versions:
-        print "Running: {0}".format(v)
+    num_versions = len(versions)
+    for i, v in enumerate(versions):
+        print "Running: {0} ({1} of {2})".format(v, (i+1), num_versions)
         compile(v)
         benchmark(writer, v)
 
