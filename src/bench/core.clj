@@ -11,6 +11,6 @@
              (.on "cycle" (fn [event#]
                             (let [b#    (-> event# .-target)
                                   stat# (-> b# .-stats)]
-                              (~'println (.-name b#) (-> b# .-times .-elapsed))
+                              (~'println (.-name b#) (-> b# .-times .-elapsed) (.-count b#))
                               (~'println (.-name b#) " || " (bench.core/get-metrics stat#)))))
              (.run))))))
