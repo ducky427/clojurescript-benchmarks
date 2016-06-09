@@ -8,11 +8,65 @@
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
 
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/c3/0.4.11/c3.min.css">
+
   </head>
   <body>
-    <h1>Hello, world!</h1>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+    <div class="container">
+      <h1>Benchmarks</h1>
+      <ul id="benchmarks">
+        <li><a href="#bench-1">[x 1] (identity x)</a></li>
+        <li><a href="#bench-2">[] (symbol (quote foo))</a></li>
+      </ul>
+      <hr>
+      <div>
+        <a id="bench-1">
+        </a>
+      </div>
+      <div>
+        <a id="bench-2">
+        </a>
+      </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/c3/0.4.11/c3.js"></script>
+    <script type="text/javascript">
+      function get_points(points, engine) {
+        var xs = points.filter(function(x) { return x.engine == engine});
+        return xs.map(function(x) {
+          return x.mean;
+        });
+      }
+
+      function plot_chart(id, title, points) {
+        var data = {x: 'x'};
+        var versions = d3.set(points.map(function(x) {return x.version})).values();
+        versions.sort();
+        data['columns'] = [['x'].concat(versions)];
+        ["V8", "JSC", "SM"].forEach(function(e) {
+          data['columns'].push([e].concat(get_points(points, e)));
+        });
+
+        c3.generate({
+          bindto: "#bench-"+id,
+          data: data,
+          axis: {x: {type: 'category', label: "Version"},
+                 y: {label: "Time"}}});
+      }
+
+      d3.csv("data.csv")
+        .row(function(d) { return {version: d.Version, engine: d.Engine, name: d.Name, mean: +d.Mean}; })
+        .get(function(error, rows) {
+          d3.selectAll('#benchmarks li')[0].forEach(function(obj, idx) {
+            var title = d3.select(obj).text();
+            var data_for_chart = rows.filter(function(x) {
+              return x.name == title;
+            });
+            plot_chart(idx+1, title, data_for_chart);
+          });
+        });
+    </script>
   </body>
 </html>
