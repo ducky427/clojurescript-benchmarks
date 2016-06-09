@@ -52,6 +52,8 @@ def benchmark(writer, version):
             engine = line
         else:
             assert engine is not None, "No engine found!"
+            if "||" not in line:
+                continue
             try:
                 title, stats = get_stats(line)
                 writer.writerow([version, engine, title] + [stats[m] for m in metrics])
