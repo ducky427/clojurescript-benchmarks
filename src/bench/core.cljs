@@ -1,13 +1,11 @@
 (ns bench.core
   (:refer-clojure :exclude [println simple-benchmark])
-  (:require-macros [bench.core :refer [benchmark-suite simple-benchmark]])
+  (:require-macros [bench.core :refer [simple-benchmark]])
   (:require [goog.object :as gobj]
             [cljsjs.benchmark]))
 
 (def println print)
 (set! *print-fn* js/print)
-
-(def ^boolean quick? true)
 
 (def metrics ["mean" "deviation" "moe" "rme" "sem"])
 
