@@ -15,6 +15,9 @@
 
     <div class="container">
       <h1>Benchmarks</h1>
+      <div class="alert alert-warning" role="alert">
+        <h4>These benchmarks have been run through simple benchmarking code and not through <a href="https://benchmarkjs.com/">Benchmark.js</a>. Hence expect noise in these numbers and possibly a large margin of error.</h4>
+      </div>
       <ul id="benchmarks">
         {% for item in items %}
         <li><a href="#bench-{{loop.index}}">{{item}}</a></li>
