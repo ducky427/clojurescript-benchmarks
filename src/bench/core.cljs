@@ -27,9 +27,9 @@
 (defn ints-seq
   ([n] (ints-seq 0 n))
   ([i n]
-     (when (< i n)
-       (lazy-seq
-        (cons i (ints-seq (inc i) n))))))
+   (when (< i n)
+     (lazy-seq
+      (cons i (ints-seq (inc i) n))))))
 
 (defmulti simple-multi identity)
 (defmethod simple-multi :foo [x] x)
@@ -320,13 +320,14 @@
                             v)))
                       1000)
     (println ";; Direct iterator")
-    (simple-benchmark []
-                      (let [iter (-iterator ipmap)]
-                        (loop [v nil]
-                          (if (.hasNext iter)
-                            (recur (.next iter))
-                            v)))
-                      1000))
+    (when-not (= *clojurescript-version* "1.7.10")
+      (simple-benchmark []
+                        (let [iter (-iterator ipmap)]
+                          (loop [v nil]
+                            (if (.hasNext iter)
+                              (recur (.next iter))
+                              v)))
+                        1000)))
 
   (println ";;; comprehensions")
   (simple-benchmark [xs (range 512)] (last (for [x xs y xs] (+ x y))) 1)
