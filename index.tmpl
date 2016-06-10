@@ -102,7 +102,7 @@
       // Colors from http://colorbrewer2.org/
       function plot_chart(id, title, points) {
         var data = {x: 'x',
-                    colors: {V8: '#66c2a5', JSC: '#fc8d62', SM: '#8da0cb'}};
+                    colors: {V8: '#d7191c', JSC: '#7b3294', SM: '#2c7bb6'}};
         var versions = d3.set(points.map(function(x) {return x.version})).values();
         versions.sort(compare_versions);
         data['columns'] = [['x'].concat(versions)];
