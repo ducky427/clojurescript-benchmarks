@@ -18,404 +18,505 @@
       <div class="alert alert-warning" role="alert">
         <h4>These benchmarks have been run through simple benchmarking code and not through <a href="https://benchmarkjs.com/">Benchmark.js</a>. Hence expect noise in these numbers and possibly a large margin of error.</h4>
       </div>
+      
       <ul id="benchmarks">
-
+        
+        <h4>identity</h4>
+        
         <li><a href="#bench-1">[x 1] (identity x)</a></li>
-
+        
+        
+        <h4>symbol construction</h4>
+        
         <li><a href="#bench-2">[] (symbol (quote foo))</a></li>
-
+        
+        
+        <h4>array-reduce & ci-reduce</h4>
+        
         <li><a href="#bench-3">[coll (seq arr)] (ci-reduce coll + 0)</a></li>
-
+        
         <li><a href="#bench-4">[coll (seq arr)] (ci-reduce coll sum 0)</a></li>
-
+        
         <li><a href="#bench-5">[coll arr] (array-reduce coll + 0)</a></li>
-
+        
         <li><a href="#bench-6">[coll arr] (array-reduce coll sum 0)</a></li>
-
+        
+        
+        <h4>instance?</h4>
+        
         <li><a href="#bench-7">[coll []] (instance? PersistentVector coll)</a></li>
-
+        
+        
+        <h4>satisfies?</h4>
+        
         <li><a href="#bench-8">[coll (list 1 2 3)] (satisfies? ISeq coll)</a></li>
-
+        
         <li><a href="#bench-9">[coll [1 2 3]] (satisfies? ISeq coll)</a></li>
-
+        
+        
+        <h4>array & string ops</h4>
+        
         <li><a href="#bench-10">[coll (array 1 2 3)] (seq coll)</a></li>
-
+        
         <li><a href="#bench-11">[coll "foobar"] (seq coll)</a></li>
-
+        
         <li><a href="#bench-12">[coll (array 1 2 3)] (first coll)</a></li>
-
+        
         <li><a href="#bench-13">[coll "foobar"] (first coll)</a></li>
-
+        
         <li><a href="#bench-14">[coll (array 1 2 3)] (nth coll 2)</a></li>
-
+        
         <li><a href="#bench-15">[coll "foobar"] (nth coll 2)</a></li>
-
+        
+        
+        <h4>cloning & specify</h4>
+        
         <li><a href="#bench-16">[coll [1 2 3]] (clone coll)</a></li>
-
+        
         <li><a href="#bench-17">[coll [1 2 3]] (specify coll IFoo (foo [_] :bar))</a></li>
-
+        
         <li><a href="#bench-18">[coll (specify [1 2 3] IFoo (foo [_] :bar))] (foo coll)</a></li>
-
+        
+        
+        <h4>list ops</h4>
+        
         <li><a href="#bench-19">[coll (list 1 2 3)] (first coll)</a></li>
-
+        
         <li><a href="#bench-20">[coll (list 1 2 3)] (-first coll)</a></li>
-
+        
         <li><a href="#bench-21">[coll (list 1 2 3)] (rest coll)</a></li>
-
+        
         <li><a href="#bench-22">[coll (list 1 2 3)] (-rest coll)</a></li>
-
+        
         <li><a href="#bench-23">[] (list)</a></li>
-
+        
         <li><a href="#bench-24">[] (list 1 2 3)</a></li>
-
+        
+        
+        <h4>vector ops</h4>
+        
         <li><a href="#bench-25">[] []</a></li>
-
+        
         <li><a href="#bench-26">[[a b c] (take 3 (repeatedly (fn* [] (rand-int 10))))] (-count [a b c])</a></li>
-
+        
         <li><a href="#bench-27">[[a b c] (take 3 (repeatedly (fn* [] (rand-int 10))))] (-count (vec #object[cljs.tagged_literals.JSValue 0xb009d06 "cljs.tagged_literals.JSValue@b009d06"]))</a></li>
-
+        
         <li><a href="#bench-28">[[a b c] (take 3 (repeatedly (fn* [] (rand-int 10))))] (-count (vector a b c))</a></li>
-
+        
         <li><a href="#bench-29">[coll [1 2 3]] (transient coll)</a></li>
-
+        
         <li><a href="#bench-30">[coll [1 2 3]] (nth coll 0)</a></li>
-
+        
         <li><a href="#bench-31">[coll [1 2 3]] (-nth coll 0)</a></li>
-
+        
         <li><a href="#bench-32">[coll [1 2 3]] (-nth coll 0)</a></li>
-
+        
         <li><a href="#bench-33">[coll [1 2 3]] (coll 0)</a></li>
-
+        
         <li><a href="#bench-34">[coll [1 2 3]] (conj coll 4)</a></li>
-
+        
         <li><a href="#bench-35">[coll [1 2 3]] (-conj coll 4)</a></li>
-
+        
         <li><a href="#bench-36">[coll []] (-conj coll 1)</a></li>
-
+        
         <li><a href="#bench-37">[coll [1]] (-conj coll 2)</a></li>
-
+        
         <li><a href="#bench-38">[coll [1 2]] (-conj coll 3)</a></li>
-
+        
         <li><a href="#bench-39">[coll [1 2 3]] (seq coll)</a></li>
-
+        
         <li><a href="#bench-40">[coll [1 2 3]] (-seq coll)</a></li>
-
+        
         <li><a href="#bench-41">[coll (seq [1 2 3])] (first coll)</a></li>
-
+        
         <li><a href="#bench-42">[coll (seq [1 2 3])] (-first coll)</a></li>
-
+        
         <li><a href="#bench-43">[coll (seq [1 2 3])] (rest coll)</a></li>
-
+        
         <li><a href="#bench-44">[coll (seq [1 2 3])] (-rest coll)</a></li>
-
+        
         <li><a href="#bench-45">[coll (seq [1 2 3])] (next coll)</a></li>
-
+        
+        
+        <h4>large vector ops</h4>
+        
         <li><a href="#bench-46">[] (reduce conj [] (range 40000))</a></li>
-
+        
         <li><a href="#bench-47">[coll (reduce conj [] (range (+ 32768 32)))] (conj coll :foo)</a></li>
-
+        
         <li><a href="#bench-48">[coll (reduce conj [] (range 40000))] (assoc coll 123 :foo)</a></li>
-
+        
         <li><a href="#bench-49">[coll (reduce conj [] (range (+ 32768 33)))] (pop coll)</a></li>
-
+        
+        
       </ul>
       <hr>
       <h2>Charts</h2>
-
-      <div id="bench-1">
+      
+      
+      
+      
+        <div id="bench-1">
         <h4>[x 1] (identity x)</h4>
         <div id="chart-1">
         </div>
-      </div>
-
-      <div id="bench-2">
+        </div>
+      
+      
+      
+      
+        <div id="bench-2">
         <h4>[] (symbol (quote foo))</h4>
         <div id="chart-2">
         </div>
-      </div>
-
-      <div id="bench-3">
+        </div>
+      
+      
+      
+      
+        <div id="bench-3">
         <h4>[coll (seq arr)] (ci-reduce coll + 0)</h4>
         <div id="chart-3">
         </div>
-      </div>
-
-      <div id="bench-4">
+        </div>
+      
+      
+        <div id="bench-4">
         <h4>[coll (seq arr)] (ci-reduce coll sum 0)</h4>
         <div id="chart-4">
         </div>
-      </div>
-
-      <div id="bench-5">
+        </div>
+      
+      
+        <div id="bench-5">
         <h4>[coll arr] (array-reduce coll + 0)</h4>
         <div id="chart-5">
         </div>
-      </div>
-
-      <div id="bench-6">
+        </div>
+      
+      
+        <div id="bench-6">
         <h4>[coll arr] (array-reduce coll sum 0)</h4>
         <div id="chart-6">
         </div>
-      </div>
-
-      <div id="bench-7">
+        </div>
+      
+      
+      
+      
+        <div id="bench-7">
         <h4>[coll []] (instance? PersistentVector coll)</h4>
         <div id="chart-7">
         </div>
-      </div>
-
-      <div id="bench-8">
+        </div>
+      
+      
+      
+      
+        <div id="bench-8">
         <h4>[coll (list 1 2 3)] (satisfies? ISeq coll)</h4>
         <div id="chart-8">
         </div>
-      </div>
-
-      <div id="bench-9">
+        </div>
+      
+      
+        <div id="bench-9">
         <h4>[coll [1 2 3]] (satisfies? ISeq coll)</h4>
         <div id="chart-9">
         </div>
-      </div>
-
-      <div id="bench-10">
+        </div>
+      
+      
+      
+      
+        <div id="bench-10">
         <h4>[coll (array 1 2 3)] (seq coll)</h4>
         <div id="chart-10">
         </div>
-      </div>
-
-      <div id="bench-11">
+        </div>
+      
+      
+        <div id="bench-11">
         <h4>[coll "foobar"] (seq coll)</h4>
         <div id="chart-11">
         </div>
-      </div>
-
-      <div id="bench-12">
+        </div>
+      
+      
+        <div id="bench-12">
         <h4>[coll (array 1 2 3)] (first coll)</h4>
         <div id="chart-12">
         </div>
-      </div>
-
-      <div id="bench-13">
+        </div>
+      
+      
+        <div id="bench-13">
         <h4>[coll "foobar"] (first coll)</h4>
         <div id="chart-13">
         </div>
-      </div>
-
-      <div id="bench-14">
+        </div>
+      
+      
+        <div id="bench-14">
         <h4>[coll (array 1 2 3)] (nth coll 2)</h4>
         <div id="chart-14">
         </div>
-      </div>
-
-      <div id="bench-15">
+        </div>
+      
+      
+        <div id="bench-15">
         <h4>[coll "foobar"] (nth coll 2)</h4>
         <div id="chart-15">
         </div>
-      </div>
-
-      <div id="bench-16">
+        </div>
+      
+      
+      
+      
+        <div id="bench-16">
         <h4>[coll [1 2 3]] (clone coll)</h4>
         <div id="chart-16">
         </div>
-      </div>
-
-      <div id="bench-17">
+        </div>
+      
+      
+        <div id="bench-17">
         <h4>[coll [1 2 3]] (specify coll IFoo (foo [_] :bar))</h4>
         <div id="chart-17">
         </div>
-      </div>
-
-      <div id="bench-18">
+        </div>
+      
+      
+        <div id="bench-18">
         <h4>[coll (specify [1 2 3] IFoo (foo [_] :bar))] (foo coll)</h4>
         <div id="chart-18">
         </div>
-      </div>
-
-      <div id="bench-19">
+        </div>
+      
+      
+      
+      
+        <div id="bench-19">
         <h4>[coll (list 1 2 3)] (first coll)</h4>
         <div id="chart-19">
         </div>
-      </div>
-
-      <div id="bench-20">
+        </div>
+      
+      
+        <div id="bench-20">
         <h4>[coll (list 1 2 3)] (-first coll)</h4>
         <div id="chart-20">
         </div>
-      </div>
-
-      <div id="bench-21">
+        </div>
+      
+      
+        <div id="bench-21">
         <h4>[coll (list 1 2 3)] (rest coll)</h4>
         <div id="chart-21">
         </div>
-      </div>
-
-      <div id="bench-22">
+        </div>
+      
+      
+        <div id="bench-22">
         <h4>[coll (list 1 2 3)] (-rest coll)</h4>
         <div id="chart-22">
         </div>
-      </div>
-
-      <div id="bench-23">
+        </div>
+      
+      
+        <div id="bench-23">
         <h4>[] (list)</h4>
         <div id="chart-23">
         </div>
-      </div>
-
-      <div id="bench-24">
+        </div>
+      
+      
+        <div id="bench-24">
         <h4>[] (list 1 2 3)</h4>
         <div id="chart-24">
         </div>
-      </div>
-
-      <div id="bench-25">
+        </div>
+      
+      
+      
+      
+        <div id="bench-25">
         <h4>[] []</h4>
         <div id="chart-25">
         </div>
-      </div>
-
-      <div id="bench-26">
+        </div>
+      
+      
+        <div id="bench-26">
         <h4>[[a b c] (take 3 (repeatedly (fn* [] (rand-int 10))))] (-count [a b c])</h4>
         <div id="chart-26">
         </div>
-      </div>
-
-      <div id="bench-27">
+        </div>
+      
+      
+        <div id="bench-27">
         <h4>[[a b c] (take 3 (repeatedly (fn* [] (rand-int 10))))] (-count (vec #object[cljs.tagged_literals.JSValue 0xb009d06 "cljs.tagged_literals.JSValue@b009d06"]))</h4>
         <div id="chart-27">
         </div>
-      </div>
-
-      <div id="bench-28">
+        </div>
+      
+      
+        <div id="bench-28">
         <h4>[[a b c] (take 3 (repeatedly (fn* [] (rand-int 10))))] (-count (vector a b c))</h4>
         <div id="chart-28">
         </div>
-      </div>
-
-      <div id="bench-29">
+        </div>
+      
+      
+        <div id="bench-29">
         <h4>[coll [1 2 3]] (transient coll)</h4>
         <div id="chart-29">
         </div>
-      </div>
-
-      <div id="bench-30">
+        </div>
+      
+      
+        <div id="bench-30">
         <h4>[coll [1 2 3]] (nth coll 0)</h4>
         <div id="chart-30">
         </div>
-      </div>
-
-      <div id="bench-31">
+        </div>
+      
+      
+        <div id="bench-31">
         <h4>[coll [1 2 3]] (-nth coll 0)</h4>
         <div id="chart-31">
         </div>
-      </div>
-
-      <div id="bench-32">
+        </div>
+      
+      
+        <div id="bench-32">
         <h4>[coll [1 2 3]] (-nth coll 0)</h4>
         <div id="chart-32">
         </div>
-      </div>
-
-      <div id="bench-33">
+        </div>
+      
+      
+        <div id="bench-33">
         <h4>[coll [1 2 3]] (coll 0)</h4>
         <div id="chart-33">
         </div>
-      </div>
-
-      <div id="bench-34">
+        </div>
+      
+      
+        <div id="bench-34">
         <h4>[coll [1 2 3]] (conj coll 4)</h4>
         <div id="chart-34">
         </div>
-      </div>
-
-      <div id="bench-35">
+        </div>
+      
+      
+        <div id="bench-35">
         <h4>[coll [1 2 3]] (-conj coll 4)</h4>
         <div id="chart-35">
         </div>
-      </div>
-
-      <div id="bench-36">
+        </div>
+      
+      
+        <div id="bench-36">
         <h4>[coll []] (-conj coll 1)</h4>
         <div id="chart-36">
         </div>
-      </div>
-
-      <div id="bench-37">
+        </div>
+      
+      
+        <div id="bench-37">
         <h4>[coll [1]] (-conj coll 2)</h4>
         <div id="chart-37">
         </div>
-      </div>
-
-      <div id="bench-38">
+        </div>
+      
+      
+        <div id="bench-38">
         <h4>[coll [1 2]] (-conj coll 3)</h4>
         <div id="chart-38">
         </div>
-      </div>
-
-      <div id="bench-39">
+        </div>
+      
+      
+        <div id="bench-39">
         <h4>[coll [1 2 3]] (seq coll)</h4>
         <div id="chart-39">
         </div>
-      </div>
-
-      <div id="bench-40">
+        </div>
+      
+      
+        <div id="bench-40">
         <h4>[coll [1 2 3]] (-seq coll)</h4>
         <div id="chart-40">
         </div>
-      </div>
-
-      <div id="bench-41">
+        </div>
+      
+      
+        <div id="bench-41">
         <h4>[coll (seq [1 2 3])] (first coll)</h4>
         <div id="chart-41">
         </div>
-      </div>
-
-      <div id="bench-42">
+        </div>
+      
+      
+        <div id="bench-42">
         <h4>[coll (seq [1 2 3])] (-first coll)</h4>
         <div id="chart-42">
         </div>
-      </div>
-
-      <div id="bench-43">
+        </div>
+      
+      
+        <div id="bench-43">
         <h4>[coll (seq [1 2 3])] (rest coll)</h4>
         <div id="chart-43">
         </div>
-      </div>
-
-      <div id="bench-44">
+        </div>
+      
+      
+        <div id="bench-44">
         <h4>[coll (seq [1 2 3])] (-rest coll)</h4>
         <div id="chart-44">
         </div>
-      </div>
-
-      <div id="bench-45">
+        </div>
+      
+      
+        <div id="bench-45">
         <h4>[coll (seq [1 2 3])] (next coll)</h4>
         <div id="chart-45">
         </div>
-      </div>
-
-      <div id="bench-46">
+        </div>
+      
+      
+      
+      
+        <div id="bench-46">
         <h4>[] (reduce conj [] (range 40000))</h4>
         <div id="chart-46">
         </div>
-      </div>
-
-      <div id="bench-47">
+        </div>
+      
+      
+        <div id="bench-47">
         <h4>[coll (reduce conj [] (range (+ 32768 32)))] (conj coll :foo)</h4>
         <div id="chart-47">
         </div>
-      </div>
-
-      <div id="bench-48">
+        </div>
+      
+      
+        <div id="bench-48">
         <h4>[coll (reduce conj [] (range 40000))] (assoc coll 123 :foo)</h4>
         <div id="chart-48">
         </div>
-      </div>
-
-      <div id="bench-49">
+        </div>
+      
+      
+        <div id="bench-49">
         <h4>[coll (reduce conj [] (range (+ 32768 33)))] (pop coll)</h4>
         <div id="chart-49">
         </div>
-      </div>
-
+        </div>
+      
+      
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js"></script>

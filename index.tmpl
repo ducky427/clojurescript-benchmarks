@@ -18,19 +18,27 @@
       <div class="alert alert-warning" role="alert">
         <h4>These benchmarks have been run through simple benchmarking code and not through <a href="https://benchmarkjs.com/">Benchmark.js</a>. Hence expect noise in these numbers and possibly a large margin of error.</h4>
       </div>
+      {% set cnt=counter(1) %}
       <ul id="benchmarks">
         {% for item in items %}
-        <li><a href="#bench-{{loop.index}}">{{item}}</a></li>
+        <h4>{{item[0]}}</h4>
+        {% for x in item[1] %}
+        <li><a href="#bench-{{cnt.next()}}">{{x}}</a></li>
+        {% endfor %}
         {% endfor %}
       </ul>
       <hr>
       <h2>Charts</h2>
+      {% set cnt=counter(1) %}
       {% for item in items %}
-      <div id="bench-{{loop.index}}">
-        <h4>{{item}}</h4>
-        <div id="chart-{{loop.index}}">
+      {% for x in item[1] %}
+      {% set tot = cnt.next() %}
+        <div id="bench-{{tot}}">
+        <h4>{{x}}</h4>
+        <div id="chart-{{tot}}">
         </div>
-      </div>
+        </div>
+      {% endfor %}
       {% endfor %}
     </div>
 
