@@ -57,7 +57,7 @@ def benchmark(writer, version):
                 continue
             try:
                 title, stats = get_stats(line)
-                writer.writerow([version, engine, title] + [stats[m] for m in metrics])
+                writer.writerow([version, engine, title] + [stats.get(m) for m in metrics])
             except:
                 print sys.exc_info()[0]
 
