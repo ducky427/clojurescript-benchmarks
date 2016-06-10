@@ -11,8 +11,7 @@
            (dotimes [_# ~iterations]
              ~expr)
            (~'println ~title " || "
-            {"mean" (/ (- (.getTime (js/Date.)) start#) ~iterations)})
-           (~'println ~title ~iterations)))
+            {"mean" (/ (- (.getTime (js/Date.)) start#) ~iterations)})))
       `(let ~bindings
          (let [suite# (bench.core/Suite.)]
            (-> suite#

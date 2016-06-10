@@ -39,27 +39,32 @@ def compile(cljs_version):
     os.environ["CLJS_VERSION"] = cljs_version
     cmd = 'lein build'
     for line in runProcess(cmd):
-        print line
+        if line:
+            print line
 
 metrics = ["mean", "deviation", "moe", "rme", "sem"]
 
 def benchmark(writer, version):
     engine = None
+    section = None
     for line in runProcess('sh run.sh'):
         if not line:
             continue
         if line in ["V8", "JSC", "SM"]:
             engine = line
-        else:
+        elif line.startswith(";;"):
+            section = line.replace(';', '').strip()
+            print engine, section
+        elif "||" in line:
             assert engine is not None, "No engine found!"
-            if "||" not in line:
-                print engine, line
-                continue
+            assert section is not None, "No section found!"
             try:
                 title, stats = get_stats(line)
-                writer.writerow([version, engine, title] + [stats.get(m) for m in metrics])
+                writer.writerow([version, engine, section, title] + [stats.get(m) for m in metrics])
             except:
                 print sys.exc_info()[0]
+        else:
+            print "Unrecognised: ", line
 
 def main(writer):
     num_versions = len(versions)
@@ -72,5 +77,5 @@ if __name__ == '__main__':
     filename = 'data_{0}.csv'.format(time.strftime("%Y%m%d_%H%M%S"))
     with open(filename, 'wb') as f:
         writer = csv.writer(f)
-        writer.writerow(["Version", "Engine", "Name", "Mean", "Deviation", "MOE", "RME", "SEM"])
+        writer.writerow(["Version", "Engine", "Section", "Name", "Mean", "Deviation", "MOE", "RME", "SEM"])
         main(writer)
