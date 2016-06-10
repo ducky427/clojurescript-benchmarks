@@ -99,7 +99,7 @@
         
         <li><a href="#bench-26">[[a b c] (take 3 (repeatedly (fn* [] (rand-int 10))))] (-count [a b c])</a></li>
         
-        <li><a href="#bench-27">[[a b c] (take 3 (repeatedly (fn* [] (rand-int 10))))] (-count (vec #object[cljs.tagged_literals.JSValue 0xb009d06 "cljs.tagged_literals.JSValue@b009d06"]))</a></li>
+        <li><a href="#bench-27">[[a b c] (take 3 (repeatedly (fn* [] (rand-int 10))))] (-count (vec (array a b c)))</a></li>
         
         <li><a href="#bench-28">[[a b c] (take 3 (repeatedly (fn* [] (rand-int 10))))] (-count (vector a b c))</a></li>
         
@@ -355,7 +355,7 @@
       
       
         <div id="bench-27">
-        <h4>[[a b c] (take 3 (repeatedly (fn* [] (rand-int 10))))] (-count (vec #object[cljs.tagged_literals.JSValue 0xb009d06 "cljs.tagged_literals.JSValue@b009d06"]))</h4>
+        <h4>[[a b c] (take 3 (repeatedly (fn* [] (rand-int 10))))] (-count (vec (array a b c)))</h4>
         <div id="chart-27">
         </div>
         </div>
