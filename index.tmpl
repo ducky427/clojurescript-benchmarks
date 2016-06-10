@@ -23,7 +23,7 @@
       <p>These benchmarks were run on Mac OS X 10.11.5 with the following engines:</p>
       <ul>
         <li>Javascript Core (JSC): Bundled with Safari Tech Preview version 9.1.2 (11601.7.4, 11602.1.35)</li>
-        <li>V8 (v8): v5.1.281.47</li>
+        <li>V8 (V8): v5.1.281.47</li>
         <li>SpiderMonkey (SM): JavaScript-C50.0a1 </li>
       </ul>
       <p>The code for running these benchmarks is <a href="https://github.com/ducky427/clojurescript-benchmarks">here</a>.</p>
@@ -99,8 +99,10 @@
         });
       }
 
+      // Colors from http://colorbrewer2.org/
       function plot_chart(id, title, points) {
-        var data = {x: 'x'};
+        var data = {x: 'x',
+                    colors: {V8: '#66c2a5', JSC: '#fc8d62', SM: '#8da0cb'}};
         var versions = d3.set(points.map(function(x) {return x.version})).values();
         versions.sort(compare_versions);
         data['columns'] = [['x'].concat(versions)];
