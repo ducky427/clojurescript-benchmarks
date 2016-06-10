@@ -2,7 +2,9 @@
   (:refer-clojure :exclude [println simple-benchmark])
   (:require-macros [bench.core :refer [simple-benchmark]])
   (:require [goog.object :as gobj]
-            [cljsjs.benchmark]))
+            [cljsjs.benchmark]
+            [cljs.reader :as reader]
+            [clojure.core.reducers :as r]))
 
 (def println print)
 (set! *print-fn* js/print)
@@ -20,6 +22,17 @@
 
 (defprotocol IFoo (foo [x]))
 
+(defrecord Foo [bar baz])
+
+(defn ints-seq
+  ([n] (ints-seq 0 n))
+  ([i n]
+     (when (< i n)
+       (lazy-seq
+        (cons i (ints-seq (inc i) n))))))
+
+(defmulti simple-multi identity)
+(defmethod simple-multi :foo [x] x)
 
 (defn init!
   []
@@ -97,6 +110,261 @@
   (simple-benchmark [coll (reduce conj [] (range 40000))] (assoc coll 123 :foo) 100000)
   (simple-benchmark [coll (reduce conj [] (range (+ 32768 33)))] (pop coll) 100000)
 
-  )
+  (println ";;; chunked seqs")
+  (let [v (seq (into [] (range 64)))]
+    (simple-benchmark [] (-first v) 1000000)
+    (simple-benchmark [] (-next v) 1000000)
+    (simple-benchmark [] (-rest v) 1000000))
+
+  #_(println ";;; transients")
+  #_(print "transient vector, conj! 1000000 items")
+  #_(time
+     (let [v (transient [])]
+       (loop [i 0 v v]
+         (if (> i 1000000)
+           (persistent! v)
+           (recur (inc i) (conj! v i))))))
+
+  (println ";;; vector equality")
+  (simple-benchmark
+   [a (into [] (range 1000000))
+    b (into [] (range 1000000))]
+   (= a b) 1)
+
+  (println ";;; keyword compare")
+  (let [seed ["amelia" "olivia" "jessica" "emily" "lily" "ava" "isla" "sophie" "mia" "isabella" "evie" "poppy" "ruby" "grace" "sophia" "chloe" "freya" "isabelle" "ella" "charlotte" "scarlett" "daisy" "lola" "holly" "eva" "lucy" "millie" "phoebe" "layla" "maisie" "sienna" "alice" "florence" "lilly" "ellie" "erin" "elizabeth" "imogen" "summer" "molly" "hannah" "sofia" "abigail" "jasmine" "matilda" "megan" "rosie" "lexi" "lacey" "emma" "amelie" "maya" "gracie" "emilia" "georgia" "hollie" "evelyn" "eliza" "amber" "eleanor" "bella" "amy" "brooke" "leah" "esme" "harriet" "anna" "katie" "zara" "willow" "elsie" "annabelle" "bethany" "faith" "madison" "isabel" "rose" "julia" "martha" "maryam" "paige" "heidi" "maddison" "niamh" "skye" "aisha" "mollie" "ivy" "francesca" "darcey" "maria" "zoe" "keira" "sarah" "tilly" "isobel" "violet" "lydia" "sara" "caitlin"]]
+    (simple-benchmark
+     [arr (into-array (repeatedly 10000 #(keyword (rand-nth seed))))]
+     (.sort arr compare)
+     100)
+    (simple-benchmark
+     [arr (into-array (repeatedly 10000 #(keyword (rand-nth seed) (rand-nth seed))))]
+     (.sort arr compare)
+     100))
+
+  (println ";;; reduce lazy-seqs, vectors, ranges")
+  (simple-benchmark [coll (take 100000 (iterate inc 0))] (reduce + 0 coll) 1)
+  (simple-benchmark [coll (range 1000000)] (reduce + 0 coll) 1)
+  (simple-benchmark [coll (into [] (range 1000000))] (reduce + 0 coll) 1)
+
+  (println ";; apply")
+  (simple-benchmark [coll (into [] (range 1000000))] (apply + coll) 1)
+  (simple-benchmark [] (list 1 2 3 4 5) 1000000)
+  (simple-benchmark [xs (array-seq (array 1 2 3 4 5))] (apply list xs) 1000000)
+  (simple-benchmark [xs (list 1 2 3 4 5)] (apply list xs) 1000000)
+  (simple-benchmark [xs [1 2 3 4 5]] (apply list xs) 1000000)
+  (simple-benchmark [f (fn [a b & more])] (apply f (range 32)) 1000000)
+  (simple-benchmark [f (fn [a b c d e f g h i j & more])] (apply f (range 32)) 1000000)
+
+  (println ";; update-in")
+  (simple-benchmark [coll {:foo 1} ks [:foo]] (update-in coll ks inc) 1000000)
+  (simple-benchmark [coll (array-map :foo 1) ks [:foo]] (update-in coll ks inc) 1000000)
+
+  (println ";;; obj-map")
+  (simple-benchmark [coll (obj-map)] (assoc coll :foo :bar) 1000000)
+  (simple-benchmark [coll (obj-map :foo :bar)] (-lookup coll :foo) 1000000)
+  (simple-benchmark [coll (obj-map :foo :bar)] (assoc coll :baz :woz) 1000000)
+  (simple-benchmark [coll (obj-map :foo :bar :baz :woz)] (-lookup coll :baz) 1000000)
+  (simple-benchmark [coll (obj-map :foo :bar :baz :woz :lol :rofl)] (-lookup coll :lol) 1000000)
+
+  (println ";;; array-map")
+  (simple-benchmark [] {[1] true [2] true [3] true} 1000000)
+  (simple-benchmark [coll (array-map)] (assoc coll :foo :bar) 1000000)
+  (simple-benchmark [coll (array-map :foo :bar)] (-lookup coll :foo) 1000000)
+  (simple-benchmark [coll (array-map :foo :bar)] (assoc coll :baz :woz) 1000000)
+  (simple-benchmark [coll (array-map :foo :bar :baz :woz)] (-lookup coll :baz) 1000000)
+  (simple-benchmark [coll (array-map :foo :bar :baz :woz :lol :rofl)] (-lookup coll :lol) 1000000)
+
+  (println ";;; array-map w/ symbols")
+  (let [a 'foo
+        b 'bar
+        c 'baz
+        d 'woz
+        e 'lol
+        f 'rofl]
+    (simple-benchmark [coll (array-map)] (assoc coll a b) 1000000)
+    (simple-benchmark [coll (array-map a b)] (-lookup coll a) 1000000)
+    (simple-benchmark [coll (array-map a b)] (assoc coll c d) 1000000)
+    (simple-benchmark [coll (array-map a b c d)] (-lookup coll c) 1000000)
+    (simple-benchmark [coll (array-map a b c d e f)] (-lookup coll e) 1000000))
+
+  (println ";;; array-map w/ inline symbols")
+  (simple-benchmark [coll (array-map)] (assoc coll 'foo 'bar) 1000000)
+  (simple-benchmark [coll (array-map 'foo 'bar)] (-lookup coll 'foo) 1000000)
+  (simple-benchmark [coll (array-map 'foo 'bar)] (assoc coll 'baz 'woz) 1000000)
+  (simple-benchmark [coll (array-map 'foo 'bar 'baz 'woz)] (-lookup coll 'baz) 1000000)
+  (simple-benchmark [coll (array-map 'foo 'bar 'baz 'woz 'lol 'rofl)] (-lookup coll 'lol) 1000000)
+
+  (println ";;; map / record ops")
+  (simple-benchmark [coll {:foo 1 :bar 2}] (get coll :foo) 1000000)
+  (simple-benchmark [coll {'foo 1 'bar 2}] (get coll 'foo) 1000000)
+  (simple-benchmark [coll {:foo 1 :bar 2}] (-lookup coll :foo nil) 1000000)
+  (simple-benchmark [coll {'foo 1 'bar 2}] (-lookup coll 'foo nil) 1000000)
+  (simple-benchmark [coll {:foo 1 :bar 2}] (:foo coll) 1000000)
+  (simple-benchmark [coll {'foo 1 'bar 2}] ('foo coll) 1000000)
+  (let [kw  :foo
+        sym 'foo]
+    (simple-benchmark [coll {:foo 1 :bar 2}] (kw coll) 1000000)
+    (simple-benchmark [coll {'foo 1 'bar 2}] (sym coll) 1000000))
+  (simple-benchmark [coll {:foo 1 :bar 2}]
+                    (loop [i 0 m coll]
+                      (if (< i 100000)
+                        (recur (inc i) (assoc m :foo 2))
+                        m))
+                    1)
+  (simple-benchmark [coll (Foo. 1 2)] (:bar coll) 1000000)
+  (simple-benchmark [coll (Foo. 1 2)] (-lookup coll :bar) 1000000)
+  (simple-benchmark [coll (Foo. 1 2)] (assoc coll :bar 2) 1000000)
+  (simple-benchmark [coll (Foo. 1 2)] (assoc coll :baz 3) 1000000)
+  (simple-benchmark [coll (Foo. 1 2)]
+                    (loop [i 0 m coll]
+                      (if (< i 1000000)
+                        (recur (inc i) (assoc m :bar 2))
+                        m))
+                    1)
+
+  (println ";;; zipmap")
+  (simple-benchmark [m {:a 1 :b 2 :c 3}] (zipmap (keys m) (map inc (vals m))) 100000)
+
+  (println ";;; persistent hash maps")
+  (let [pmap                (into cljs.core.PersistentHashMap.EMPTY
+                                  [[:a 0] [:b 1] [:c 2] [:d 3] [:e 4] [:f 5] [:g 6] [:h 7]
+                                   [:i 8] [:j 9] [:k 10] [:l 11] [:m 12] [:n 13] [:o 14] [:p 15]
+                                   [:q 16] [:r 17] [:s 18] [:t 19] [:u 20] [:v 21] [:w 22] [:x 23]
+                                   [:y 24] [:z 25] [:a0 26] [:b0 27] [:c0 28] [:d0 29] [:e0 30] [:f0 31]])
+        hash-coll-test      (loop [i 0 r []]
+                              (if (< i 1000)
+                                (recur (inc i) (conj r (str "foo" i)))
+                                r))
+        hash-imap-test      (loop [i 0 r {}]
+                              (if (< i 1000)
+                                (recur (inc i) (conj r [(keyword (str "foo" i)) i]))
+                                r))
+        hash-imap-int-test   (loop [i 0 r {}]
+                               (if (< i 1000)
+                                 (recur (inc i) (conj r [i i]))
+                                 r))]
+
+    (simple-benchmark [key :f0] (hash key) 1000000)
+    (simple-benchmark [key "f0"] (m3-hash-unencoded-chars key) 1000000)
+    (simple-benchmark [key :unsynchronized-mutable] (hash key) 1000000)
+
+    (simple-benchmark [coll hash-coll-test] (hash-coll coll) 100)
+    (simple-benchmark [coll hash-coll-test] (hash-ordered-coll coll) 100)
+    (simple-benchmark [coll hash-imap-test] (hash-imap coll) 100)
+    (simple-benchmark [coll hash-imap-test] (hash-unordered-coll coll) 100)
+    (simple-benchmark [coll pmap] (:f0 coll) 1000000)
+    (simple-benchmark [coll pmap] (get coll :f0) 1000000)
+    (simple-benchmark [coll pmap] (-lookup coll :f0 nil) 1000000)
+    (simple-benchmark [coll pmap] (-lookup ^not-native hash-imap-test :foo500 nil) 1000000)
+    (simple-benchmark [coll pmap] (-lookup ^not-native hash-imap-int-test 500 nil) 1000000)
+    (simple-benchmark [coll pmap] (assoc coll :g0 32) 1000000)
+    (simple-benchmark [coll pmap]
+                      (loop [i 0 m coll]
+                        (if (< i 1000000)
+                          (recur (inc i) (assoc m :a 1))
+                          m))
+                      1)
+    (simple-benchmark [coll cljs.core.PersistentHashMap.EMPTY] (assoc coll :f0 1) 1000000))
+
+  #_(print "transient map, conj! 100000 items")
+  #_(time
+     (let [m (transient cljs.core.PersistentHashMap.EMPTY)]
+       (loop [i 0 m m]
+         (if (> i 100000)
+           (persistent! m)
+           (recur (inc i) (assoc! m i i))))))
+
+  (println ";;; set ops")
+  (simple-benchmark [] #{} 1000000)
+  (simple-benchmark [] #{1 2 3} 1000000)
+  (simple-benchmark [v [1 2 3]] (set v) 1000000)
+  (simple-benchmark [] (hash-set 1 2 3) 1000000)
+  (simple-benchmark [coll #{1 2 3}] (conj coll 4) 1000000)
+  (simple-benchmark [coll #{1 2 3}] (get coll 2) 1000000)
+  (simple-benchmark [coll #{1 2 3}] (contains? coll 2) 1000000)
+  (simple-benchmark [coll #{1 2 3}] (coll 2) 1000000)
+
+  (println ";;; seq ops")
+  (simple-benchmark [coll (range 500000)] (reduce + coll) 1)
+
+  (println ";;; reader")
+  (let [strings        (take 10 (iterate (fn [s] (str s "string")) "string"))
+        big-str-data   (pr-str {:nils (repeat 10 nil)
+                                :bools (concat (repeat 5 false) (repeat 5 true))
+                                :ints (range 10000 10100)
+                                :floats (map #(float (/ % 7)) (range 0 100))
+                                :keywords (map keyword strings)
+                                :symbols (map symbol strings)
+                                :strings strings})]
+
+    (simple-benchmark [s "{:foo [1 2 3]}"] (reader/read-string s) 1000)
+    (simple-benchmark [s big-str-data] (reader/read-string s) 1000))
+
+  (println ";;; range")
+  (simple-benchmark [r (range 1000000)] (last r) 1)
+
+  (let [r         (ints-seq 1000000)]
+    (println ";;; lazy-seq - first run")
+    (simple-benchmark [r r] (last r) 1)
+    (println ";;; lazy-seq - second run")
+    (simple-benchmark [r r] (last r) 1))
+
+  (let [ipmap (apply hash-map (range 2000))]
+    (println ";; Sequence iterator")
+    (simple-benchmark [s (seq ipmap)]
+                      (let [iter (seq-iter s)]
+                        (loop [v nil]
+                          (if (.hasNext iter)
+                            (recur (.next iter))
+                            v)))
+                      1000)
+    (println ";; Direct iterator")
+    (simple-benchmark []
+                      (let [iter (-iterator ipmap)]
+                        (loop [v nil]
+                          (if (.hasNext iter)
+                            (recur (.next iter))
+                            v)))
+                      1000))
+
+  (println ";;; comprehensions")
+  (simple-benchmark [xs (range 512)] (last (for [x xs y xs] (+ x y))) 1)
+  (simple-benchmark [xs (vec (range 512))] (last (for [x xs y xs] (+ x y))) 4)
+  (simple-benchmark [a (Box. 0) xs (range 512)] (doseq [x xs y xs] (set! a -val (+ (.-val a) x))) 4)
+  (simple-benchmark [a (Box. 0) xs (vec (range 512))] (doseq [x xs y xs] (set! a -val (+ (.-val a) x))) 4)
+
+  (println ";; reducers")
+  (simple-benchmark [xs (into [] (range 1000000))] (r/reduce + (r/map inc (r/map inc (r/map inc xs)))) 1)
+
+  (println ";; transducers")
+  (simple-benchmark [xs (into [] (range 1000000))] (transduce (comp (map inc) (map inc) (map inc)) + 0 xs) 1)
+
+  (println ";; primitive array reduce 1000000 many ops")
+  (simple-benchmark [xs (into-array (range 1000000))]
+                    (-> xs (.map inc) (.map inc) (.map inc) (.reduce (fn [a b] (+ a b)) 0)) 1)
+
+  (println ";; reduce range 1000000 many ops")
+  (simple-benchmark [xs (range 1000000)] (reduce + 0 (map inc (map inc (map inc xs)))) 1)
+
+  (println ";; transduce range 1000000 many ops ")
+  (simple-benchmark [xs (range 1000000)] (transduce (comp (map inc) (map inc) (map inc)) + 0 xs) 1)
+
+  (println ";; multimethods")
+  (simple-benchmark [] (simple-multi :foo) 1000000)
+
+  (println ";; higher-order variadic function calls")
+;; Deliberately frustrates static-fn optimization and macros
+  (simple-benchmark [f array] (f 1 2 3 4 5 6 7 8 9 0) 100000)
+  (simple-benchmark [f vector] (f 1 2 3 4 5 6 7 8 9 0) 100000)
+  (simple-benchmark [] (= 1 1 1 1 1 1 1 1 1 0) 100000)
+
+  (println ";; Destructuring a sequence")
+  (simple-benchmark [v (into [] (range 1000000))]
+                    (loop [[x & xs] v]
+                      (if-not (nil? xs)
+                        (recur xs)
+                        x))
+                    10))
 
 (init!)
