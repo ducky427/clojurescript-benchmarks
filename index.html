@@ -149,6 +149,294 @@
         <li><a href="#bench-49">[coll (reduce conj [] (range (+ 32768 33)))] (pop coll)</a></li>
         
         
+        <h4>chunked seqs</h4>
+        
+        <li><a href="#bench-50">[] (-first v)</a></li>
+        
+        <li><a href="#bench-51">[] (-next v)</a></li>
+        
+        <li><a href="#bench-52">[] (-rest v)</a></li>
+        
+        
+        <h4>vector equality</h4>
+        
+        <li><a href="#bench-53">[a (into [] (range 1000000)) b (into [] (range 1000000))] (= a b)</a></li>
+        
+        
+        <h4>keyword compare</h4>
+        
+        <li><a href="#bench-54">[arr (into-array (repeatedly 10000 (fn* [] (keyword (rand-nth seed)))))] (.sort arr compare)</a></li>
+        
+        <li><a href="#bench-55">[arr (into-array (repeatedly 10000 (fn* [] (keyword (rand-nth seed) (rand-nth seed)))))] (.sort arr compare)</a></li>
+        
+        
+        <h4>reduce lazy-seqs, vectors, ranges</h4>
+        
+        <li><a href="#bench-56">[coll (take 100000 (iterate inc 0))] (reduce + 0 coll)</a></li>
+        
+        <li><a href="#bench-57">[coll (range 1000000)] (reduce + 0 coll)</a></li>
+        
+        <li><a href="#bench-58">[coll (into [] (range 1000000))] (reduce + 0 coll)</a></li>
+        
+        
+        <h4>apply</h4>
+        
+        <li><a href="#bench-59">[coll (into [] (range 1000000))] (apply + coll)</a></li>
+        
+        <li><a href="#bench-60">[] (list 1 2 3 4 5)</a></li>
+        
+        <li><a href="#bench-61">[xs (array-seq (array 1 2 3 4 5))] (apply list xs)</a></li>
+        
+        <li><a href="#bench-62">[xs (list 1 2 3 4 5)] (apply list xs)</a></li>
+        
+        <li><a href="#bench-63">[xs [1 2 3 4 5]] (apply list xs)</a></li>
+        
+        <li><a href="#bench-64">[f (fn [a b & more])] (apply f (range 32))</a></li>
+        
+        <li><a href="#bench-65">[f (fn [a b c d e f g h i j & more])] (apply f (range 32))</a></li>
+        
+        
+        <h4>update-in</h4>
+        
+        <li><a href="#bench-66">[coll {:foo 1} ks [:foo]] (update-in coll ks inc)</a></li>
+        
+        <li><a href="#bench-67">[coll (array-map :foo 1) ks [:foo]] (update-in coll ks inc)</a></li>
+        
+        
+        <h4>obj-map</h4>
+        
+        <li><a href="#bench-68">[coll (obj-map)] (assoc coll :foo :bar)</a></li>
+        
+        <li><a href="#bench-69">[coll (obj-map :foo :bar)] (-lookup coll :foo)</a></li>
+        
+        <li><a href="#bench-70">[coll (obj-map :foo :bar)] (assoc coll :baz :woz)</a></li>
+        
+        <li><a href="#bench-71">[coll (obj-map :foo :bar :baz :woz)] (-lookup coll :baz)</a></li>
+        
+        <li><a href="#bench-72">[coll (obj-map :foo :bar :baz :woz :lol :rofl)] (-lookup coll :lol)</a></li>
+        
+        
+        <h4>array-map</h4>
+        
+        <li><a href="#bench-73">[] {[1] true, [2] true, [3] true}</a></li>
+        
+        <li><a href="#bench-74">[coll (array-map)] (assoc coll :foo :bar)</a></li>
+        
+        <li><a href="#bench-75">[coll (array-map :foo :bar)] (-lookup coll :foo)</a></li>
+        
+        <li><a href="#bench-76">[coll (array-map :foo :bar)] (assoc coll :baz :woz)</a></li>
+        
+        <li><a href="#bench-77">[coll (array-map :foo :bar :baz :woz)] (-lookup coll :baz)</a></li>
+        
+        <li><a href="#bench-78">[coll (array-map :foo :bar :baz :woz :lol :rofl)] (-lookup coll :lol)</a></li>
+        
+        
+        <h4>array-map w/ symbols</h4>
+        
+        <li><a href="#bench-79">[coll (array-map)] (assoc coll a b)</a></li>
+        
+        <li><a href="#bench-80">[coll (array-map a b)] (-lookup coll a)</a></li>
+        
+        <li><a href="#bench-81">[coll (array-map a b)] (assoc coll c d)</a></li>
+        
+        <li><a href="#bench-82">[coll (array-map a b c d)] (-lookup coll c)</a></li>
+        
+        <li><a href="#bench-83">[coll (array-map a b c d e f)] (-lookup coll e)</a></li>
+        
+        
+        <h4>array-map w/ inline symbols</h4>
+        
+        <li><a href="#bench-84">[coll (array-map)] (assoc coll (quote foo) (quote bar))</a></li>
+        
+        <li><a href="#bench-85">[coll (array-map (quote foo) (quote bar))] (-lookup coll (quote foo))</a></li>
+        
+        <li><a href="#bench-86">[coll (array-map (quote foo) (quote bar))] (assoc coll (quote baz) (quote woz))</a></li>
+        
+        <li><a href="#bench-87">[coll (array-map (quote foo) (quote bar) (quote baz) (quote woz))] (-lookup coll (quote baz))</a></li>
+        
+        <li><a href="#bench-88">[coll (array-map (quote foo) (quote bar) (quote baz) (quote woz) (quote lol) (quote rofl))] (-lookup coll (quote lol))</a></li>
+        
+        
+        <h4>map / record ops</h4>
+        
+        <li><a href="#bench-89">[coll {:foo 1, :bar 2}] (get coll :foo)</a></li>
+        
+        <li><a href="#bench-90">[coll {(quote foo) 1, (quote bar) 2}] (get coll (quote foo))</a></li>
+        
+        <li><a href="#bench-91">[coll {:foo 1, :bar 2}] (-lookup coll :foo nil)</a></li>
+        
+        <li><a href="#bench-92">[coll {(quote foo) 1, (quote bar) 2}] (-lookup coll (quote foo) nil)</a></li>
+        
+        <li><a href="#bench-93">[coll {:foo 1, :bar 2}] (:foo coll)</a></li>
+        
+        <li><a href="#bench-94">[coll {(quote foo) 1, (quote bar) 2}] ((quote foo) coll)</a></li>
+        
+        <li><a href="#bench-95">[coll {:foo 1, :bar 2}] (kw coll)</a></li>
+        
+        <li><a href="#bench-96">[coll {(quote foo) 1, (quote bar) 2}] (sym coll)</a></li>
+        
+        <li><a href="#bench-97">[coll {:foo 1, :bar 2}] (loop [i 0 m coll] (if (< i 100000) (recur (inc i) (assoc m :foo 2)) m))</a></li>
+        
+        <li><a href="#bench-98">[coll (Foo. 1 2)] (:bar coll)</a></li>
+        
+        <li><a href="#bench-99">[coll (Foo. 1 2)] (-lookup coll :bar)</a></li>
+        
+        <li><a href="#bench-100">[coll (Foo. 1 2)] (assoc coll :bar 2)</a></li>
+        
+        <li><a href="#bench-101">[coll (Foo. 1 2)] (assoc coll :baz 3)</a></li>
+        
+        <li><a href="#bench-102">[coll (Foo. 1 2)] (loop [i 0 m coll] (if (< i 1000000) (recur (inc i) (assoc m :bar 2)) m))</a></li>
+        
+        
+        <h4>zipmap</h4>
+        
+        <li><a href="#bench-103">[m {:a 1, :b 2, :c 3}] (zipmap (keys m) (map inc (vals m)))</a></li>
+        
+        
+        <h4>persistent hash maps</h4>
+        
+        <li><a href="#bench-104">[key :f0] (hash key)</a></li>
+        
+        <li><a href="#bench-105">[key "f0"] (m3-hash-unencoded-chars key)</a></li>
+        
+        <li><a href="#bench-106">[key :unsynchronized-mutable] (hash key)</a></li>
+        
+        <li><a href="#bench-107">[coll hash-coll-test] (hash-coll coll)</a></li>
+        
+        <li><a href="#bench-108">[coll hash-coll-test] (hash-ordered-coll coll)</a></li>
+        
+        <li><a href="#bench-109">[coll hash-imap-test] (hash-imap coll)</a></li>
+        
+        <li><a href="#bench-110">[coll hash-imap-test] (hash-unordered-coll coll)</a></li>
+        
+        <li><a href="#bench-111">[coll pmap] (:f0 coll)</a></li>
+        
+        <li><a href="#bench-112">[coll pmap] (get coll :f0)</a></li>
+        
+        <li><a href="#bench-113">[coll pmap] (-lookup coll :f0 nil)</a></li>
+        
+        <li><a href="#bench-114">[coll pmap] (-lookup hash-imap-test :foo500 nil)</a></li>
+        
+        <li><a href="#bench-115">[coll pmap] (-lookup hash-imap-int-test 500 nil)</a></li>
+        
+        <li><a href="#bench-116">[coll pmap] (assoc coll :g0 32)</a></li>
+        
+        <li><a href="#bench-117">[coll pmap] (loop [i 0 m coll] (if (< i 1000000) (recur (inc i) (assoc m :a 1)) m))</a></li>
+        
+        <li><a href="#bench-118">[coll cljs.core.PersistentHashMap.EMPTY] (assoc coll :f0 1)</a></li>
+        
+        
+        <h4>set ops</h4>
+        
+        <li><a href="#bench-119">[] #{}</a></li>
+        
+        <li><a href="#bench-120">[] #{1 3 2}</a></li>
+        
+        <li><a href="#bench-121">[v [1 2 3]] (set v)</a></li>
+        
+        <li><a href="#bench-122">[] (hash-set 1 2 3)</a></li>
+        
+        <li><a href="#bench-123">[coll #{1 3 2}] (conj coll 4)</a></li>
+        
+        <li><a href="#bench-124">[coll #{1 3 2}] (get coll 2)</a></li>
+        
+        <li><a href="#bench-125">[coll #{1 3 2}] (contains? coll 2)</a></li>
+        
+        <li><a href="#bench-126">[coll #{1 3 2}] (coll 2)</a></li>
+        
+        
+        <h4>seq ops</h4>
+        
+        <li><a href="#bench-127">[coll (range 500000)] (reduce + coll)</a></li>
+        
+        
+        <h4>reader</h4>
+        
+        <li><a href="#bench-128">[s "{:foo [1 2 3]}"] (reader/read-string s)</a></li>
+        
+        <li><a href="#bench-129">[s big-str-data] (reader/read-string s)</a></li>
+        
+        
+        <h4>range</h4>
+        
+        <li><a href="#bench-130">[r (range 1000000)] (last r)</a></li>
+        
+        
+        <h4>lazy-seq - first run</h4>
+        
+        <li><a href="#bench-131">[r r] (last r)</a></li>
+        
+        
+        <h4>lazy-seq - second run</h4>
+        
+        <li><a href="#bench-132">[r r] (last r)</a></li>
+        
+        
+        <h4>Sequence iterator</h4>
+        
+        <li><a href="#bench-133">[s (seq ipmap)] (let [iter (seq-iter s)] (loop [v nil] (if (.hasNext iter) (recur (.next iter)) v)))</a></li>
+        
+        
+        <h4>Direct iterator</h4>
+        
+        <li><a href="#bench-134">[] (let [iter (-iterator ipmap)] (loop [v nil] (if (.hasNext iter) (recur (.next iter)) v)))</a></li>
+        
+        
+        <h4>comprehensions</h4>
+        
+        <li><a href="#bench-135">[xs (range 512)] (last (for [x xs y xs] (+ x y)))</a></li>
+        
+        <li><a href="#bench-136">[xs (vec (range 512))] (last (for [x xs y xs] (+ x y)))</a></li>
+        
+        <li><a href="#bench-137">[a (Box. 0) xs (range 512)] (doseq [x xs y xs] (set! a -val (+ (.-val a) x)))</a></li>
+        
+        <li><a href="#bench-138">[a (Box. 0) xs (vec (range 512))] (doseq [x xs y xs] (set! a -val (+ (.-val a) x)))</a></li>
+        
+        
+        <h4>reducers</h4>
+        
+        <li><a href="#bench-139">[xs (into [] (range 1000000))] (r/reduce + (r/map inc (r/map inc (r/map inc xs))))</a></li>
+        
+        
+        <h4>transducers</h4>
+        
+        <li><a href="#bench-140">[xs (into [] (range 1000000))] (transduce (comp (map inc) (map inc) (map inc)) + 0 xs)</a></li>
+        
+        
+        <h4>primitive array reduce 1000000 many ops</h4>
+        
+        <li><a href="#bench-141">[xs (into-array (range 1000000))] (-> xs (.map inc) (.map inc) (.map inc) (.reduce (fn [a b] (+ a b)) 0))</a></li>
+        
+        
+        <h4>reduce range 1000000 many ops</h4>
+        
+        <li><a href="#bench-142">[xs (range 1000000)] (reduce + 0 (map inc (map inc (map inc xs))))</a></li>
+        
+        
+        <h4>transduce range 1000000 many ops</h4>
+        
+        <li><a href="#bench-143">[xs (range 1000000)] (transduce (comp (map inc) (map inc) (map inc)) + 0 xs)</a></li>
+        
+        
+        <h4>multimethods</h4>
+        
+        <li><a href="#bench-144">[] (simple-multi :foo)</a></li>
+        
+        
+        <h4>higher-order variadic function calls</h4>
+        
+        <li><a href="#bench-145">[f array] (f 1 2 3 4 5 6 7 8 9 0)</a></li>
+        
+        <li><a href="#bench-146">[f vector] (f 1 2 3 4 5 6 7 8 9 0)</a></li>
+        
+        <li><a href="#bench-147">[] (= 1 1 1 1 1 1 1 1 1 0)</a></li>
+        
+        
+        <h4>Destructuring a sequence</h4>
+        
+        <li><a href="#bench-148">[v (into [] (range 1000000))] (loop [[x & xs] v] (if-not (nil? xs) (recur xs) x))</a></li>
+        
+        
       </ul>
       <hr>
       <h2>Charts</h2>
@@ -513,6 +801,759 @@
         <div id="bench-49">
         <h4>[coll (reduce conj [] (range (+ 32768 33)))] (pop coll)</h4>
         <div id="chart-49">
+        </div>
+        </div>
+      
+      
+      
+      
+        <div id="bench-50">
+        <h4>[] (-first v)</h4>
+        <div id="chart-50">
+        </div>
+        </div>
+      
+      
+        <div id="bench-51">
+        <h4>[] (-next v)</h4>
+        <div id="chart-51">
+        </div>
+        </div>
+      
+      
+        <div id="bench-52">
+        <h4>[] (-rest v)</h4>
+        <div id="chart-52">
+        </div>
+        </div>
+      
+      
+      
+      
+        <div id="bench-53">
+        <h4>[a (into [] (range 1000000)) b (into [] (range 1000000))] (= a b)</h4>
+        <div id="chart-53">
+        </div>
+        </div>
+      
+      
+      
+      
+        <div id="bench-54">
+        <h4>[arr (into-array (repeatedly 10000 (fn* [] (keyword (rand-nth seed)))))] (.sort arr compare)</h4>
+        <div id="chart-54">
+        </div>
+        </div>
+      
+      
+        <div id="bench-55">
+        <h4>[arr (into-array (repeatedly 10000 (fn* [] (keyword (rand-nth seed) (rand-nth seed)))))] (.sort arr compare)</h4>
+        <div id="chart-55">
+        </div>
+        </div>
+      
+      
+      
+      
+        <div id="bench-56">
+        <h4>[coll (take 100000 (iterate inc 0))] (reduce + 0 coll)</h4>
+        <div id="chart-56">
+        </div>
+        </div>
+      
+      
+        <div id="bench-57">
+        <h4>[coll (range 1000000)] (reduce + 0 coll)</h4>
+        <div id="chart-57">
+        </div>
+        </div>
+      
+      
+        <div id="bench-58">
+        <h4>[coll (into [] (range 1000000))] (reduce + 0 coll)</h4>
+        <div id="chart-58">
+        </div>
+        </div>
+      
+      
+      
+      
+        <div id="bench-59">
+        <h4>[coll (into [] (range 1000000))] (apply + coll)</h4>
+        <div id="chart-59">
+        </div>
+        </div>
+      
+      
+        <div id="bench-60">
+        <h4>[] (list 1 2 3 4 5)</h4>
+        <div id="chart-60">
+        </div>
+        </div>
+      
+      
+        <div id="bench-61">
+        <h4>[xs (array-seq (array 1 2 3 4 5))] (apply list xs)</h4>
+        <div id="chart-61">
+        </div>
+        </div>
+      
+      
+        <div id="bench-62">
+        <h4>[xs (list 1 2 3 4 5)] (apply list xs)</h4>
+        <div id="chart-62">
+        </div>
+        </div>
+      
+      
+        <div id="bench-63">
+        <h4>[xs [1 2 3 4 5]] (apply list xs)</h4>
+        <div id="chart-63">
+        </div>
+        </div>
+      
+      
+        <div id="bench-64">
+        <h4>[f (fn [a b & more])] (apply f (range 32))</h4>
+        <div id="chart-64">
+        </div>
+        </div>
+      
+      
+        <div id="bench-65">
+        <h4>[f (fn [a b c d e f g h i j & more])] (apply f (range 32))</h4>
+        <div id="chart-65">
+        </div>
+        </div>
+      
+      
+      
+      
+        <div id="bench-66">
+        <h4>[coll {:foo 1} ks [:foo]] (update-in coll ks inc)</h4>
+        <div id="chart-66">
+        </div>
+        </div>
+      
+      
+        <div id="bench-67">
+        <h4>[coll (array-map :foo 1) ks [:foo]] (update-in coll ks inc)</h4>
+        <div id="chart-67">
+        </div>
+        </div>
+      
+      
+      
+      
+        <div id="bench-68">
+        <h4>[coll (obj-map)] (assoc coll :foo :bar)</h4>
+        <div id="chart-68">
+        </div>
+        </div>
+      
+      
+        <div id="bench-69">
+        <h4>[coll (obj-map :foo :bar)] (-lookup coll :foo)</h4>
+        <div id="chart-69">
+        </div>
+        </div>
+      
+      
+        <div id="bench-70">
+        <h4>[coll (obj-map :foo :bar)] (assoc coll :baz :woz)</h4>
+        <div id="chart-70">
+        </div>
+        </div>
+      
+      
+        <div id="bench-71">
+        <h4>[coll (obj-map :foo :bar :baz :woz)] (-lookup coll :baz)</h4>
+        <div id="chart-71">
+        </div>
+        </div>
+      
+      
+        <div id="bench-72">
+        <h4>[coll (obj-map :foo :bar :baz :woz :lol :rofl)] (-lookup coll :lol)</h4>
+        <div id="chart-72">
+        </div>
+        </div>
+      
+      
+      
+      
+        <div id="bench-73">
+        <h4>[] {[1] true, [2] true, [3] true}</h4>
+        <div id="chart-73">
+        </div>
+        </div>
+      
+      
+        <div id="bench-74">
+        <h4>[coll (array-map)] (assoc coll :foo :bar)</h4>
+        <div id="chart-74">
+        </div>
+        </div>
+      
+      
+        <div id="bench-75">
+        <h4>[coll (array-map :foo :bar)] (-lookup coll :foo)</h4>
+        <div id="chart-75">
+        </div>
+        </div>
+      
+      
+        <div id="bench-76">
+        <h4>[coll (array-map :foo :bar)] (assoc coll :baz :woz)</h4>
+        <div id="chart-76">
+        </div>
+        </div>
+      
+      
+        <div id="bench-77">
+        <h4>[coll (array-map :foo :bar :baz :woz)] (-lookup coll :baz)</h4>
+        <div id="chart-77">
+        </div>
+        </div>
+      
+      
+        <div id="bench-78">
+        <h4>[coll (array-map :foo :bar :baz :woz :lol :rofl)] (-lookup coll :lol)</h4>
+        <div id="chart-78">
+        </div>
+        </div>
+      
+      
+      
+      
+        <div id="bench-79">
+        <h4>[coll (array-map)] (assoc coll a b)</h4>
+        <div id="chart-79">
+        </div>
+        </div>
+      
+      
+        <div id="bench-80">
+        <h4>[coll (array-map a b)] (-lookup coll a)</h4>
+        <div id="chart-80">
+        </div>
+        </div>
+      
+      
+        <div id="bench-81">
+        <h4>[coll (array-map a b)] (assoc coll c d)</h4>
+        <div id="chart-81">
+        </div>
+        </div>
+      
+      
+        <div id="bench-82">
+        <h4>[coll (array-map a b c d)] (-lookup coll c)</h4>
+        <div id="chart-82">
+        </div>
+        </div>
+      
+      
+        <div id="bench-83">
+        <h4>[coll (array-map a b c d e f)] (-lookup coll e)</h4>
+        <div id="chart-83">
+        </div>
+        </div>
+      
+      
+      
+      
+        <div id="bench-84">
+        <h4>[coll (array-map)] (assoc coll (quote foo) (quote bar))</h4>
+        <div id="chart-84">
+        </div>
+        </div>
+      
+      
+        <div id="bench-85">
+        <h4>[coll (array-map (quote foo) (quote bar))] (-lookup coll (quote foo))</h4>
+        <div id="chart-85">
+        </div>
+        </div>
+      
+      
+        <div id="bench-86">
+        <h4>[coll (array-map (quote foo) (quote bar))] (assoc coll (quote baz) (quote woz))</h4>
+        <div id="chart-86">
+        </div>
+        </div>
+      
+      
+        <div id="bench-87">
+        <h4>[coll (array-map (quote foo) (quote bar) (quote baz) (quote woz))] (-lookup coll (quote baz))</h4>
+        <div id="chart-87">
+        </div>
+        </div>
+      
+      
+        <div id="bench-88">
+        <h4>[coll (array-map (quote foo) (quote bar) (quote baz) (quote woz) (quote lol) (quote rofl))] (-lookup coll (quote lol))</h4>
+        <div id="chart-88">
+        </div>
+        </div>
+      
+      
+      
+      
+        <div id="bench-89">
+        <h4>[coll {:foo 1, :bar 2}] (get coll :foo)</h4>
+        <div id="chart-89">
+        </div>
+        </div>
+      
+      
+        <div id="bench-90">
+        <h4>[coll {(quote foo) 1, (quote bar) 2}] (get coll (quote foo))</h4>
+        <div id="chart-90">
+        </div>
+        </div>
+      
+      
+        <div id="bench-91">
+        <h4>[coll {:foo 1, :bar 2}] (-lookup coll :foo nil)</h4>
+        <div id="chart-91">
+        </div>
+        </div>
+      
+      
+        <div id="bench-92">
+        <h4>[coll {(quote foo) 1, (quote bar) 2}] (-lookup coll (quote foo) nil)</h4>
+        <div id="chart-92">
+        </div>
+        </div>
+      
+      
+        <div id="bench-93">
+        <h4>[coll {:foo 1, :bar 2}] (:foo coll)</h4>
+        <div id="chart-93">
+        </div>
+        </div>
+      
+      
+        <div id="bench-94">
+        <h4>[coll {(quote foo) 1, (quote bar) 2}] ((quote foo) coll)</h4>
+        <div id="chart-94">
+        </div>
+        </div>
+      
+      
+        <div id="bench-95">
+        <h4>[coll {:foo 1, :bar 2}] (kw coll)</h4>
+        <div id="chart-95">
+        </div>
+        </div>
+      
+      
+        <div id="bench-96">
+        <h4>[coll {(quote foo) 1, (quote bar) 2}] (sym coll)</h4>
+        <div id="chart-96">
+        </div>
+        </div>
+      
+      
+        <div id="bench-97">
+        <h4>[coll {:foo 1, :bar 2}] (loop [i 0 m coll] (if (< i 100000) (recur (inc i) (assoc m :foo 2)) m))</h4>
+        <div id="chart-97">
+        </div>
+        </div>
+      
+      
+        <div id="bench-98">
+        <h4>[coll (Foo. 1 2)] (:bar coll)</h4>
+        <div id="chart-98">
+        </div>
+        </div>
+      
+      
+        <div id="bench-99">
+        <h4>[coll (Foo. 1 2)] (-lookup coll :bar)</h4>
+        <div id="chart-99">
+        </div>
+        </div>
+      
+      
+        <div id="bench-100">
+        <h4>[coll (Foo. 1 2)] (assoc coll :bar 2)</h4>
+        <div id="chart-100">
+        </div>
+        </div>
+      
+      
+        <div id="bench-101">
+        <h4>[coll (Foo. 1 2)] (assoc coll :baz 3)</h4>
+        <div id="chart-101">
+        </div>
+        </div>
+      
+      
+        <div id="bench-102">
+        <h4>[coll (Foo. 1 2)] (loop [i 0 m coll] (if (< i 1000000) (recur (inc i) (assoc m :bar 2)) m))</h4>
+        <div id="chart-102">
+        </div>
+        </div>
+      
+      
+      
+      
+        <div id="bench-103">
+        <h4>[m {:a 1, :b 2, :c 3}] (zipmap (keys m) (map inc (vals m)))</h4>
+        <div id="chart-103">
+        </div>
+        </div>
+      
+      
+      
+      
+        <div id="bench-104">
+        <h4>[key :f0] (hash key)</h4>
+        <div id="chart-104">
+        </div>
+        </div>
+      
+      
+        <div id="bench-105">
+        <h4>[key "f0"] (m3-hash-unencoded-chars key)</h4>
+        <div id="chart-105">
+        </div>
+        </div>
+      
+      
+        <div id="bench-106">
+        <h4>[key :unsynchronized-mutable] (hash key)</h4>
+        <div id="chart-106">
+        </div>
+        </div>
+      
+      
+        <div id="bench-107">
+        <h4>[coll hash-coll-test] (hash-coll coll)</h4>
+        <div id="chart-107">
+        </div>
+        </div>
+      
+      
+        <div id="bench-108">
+        <h4>[coll hash-coll-test] (hash-ordered-coll coll)</h4>
+        <div id="chart-108">
+        </div>
+        </div>
+      
+      
+        <div id="bench-109">
+        <h4>[coll hash-imap-test] (hash-imap coll)</h4>
+        <div id="chart-109">
+        </div>
+        </div>
+      
+      
+        <div id="bench-110">
+        <h4>[coll hash-imap-test] (hash-unordered-coll coll)</h4>
+        <div id="chart-110">
+        </div>
+        </div>
+      
+      
+        <div id="bench-111">
+        <h4>[coll pmap] (:f0 coll)</h4>
+        <div id="chart-111">
+        </div>
+        </div>
+      
+      
+        <div id="bench-112">
+        <h4>[coll pmap] (get coll :f0)</h4>
+        <div id="chart-112">
+        </div>
+        </div>
+      
+      
+        <div id="bench-113">
+        <h4>[coll pmap] (-lookup coll :f0 nil)</h4>
+        <div id="chart-113">
+        </div>
+        </div>
+      
+      
+        <div id="bench-114">
+        <h4>[coll pmap] (-lookup hash-imap-test :foo500 nil)</h4>
+        <div id="chart-114">
+        </div>
+        </div>
+      
+      
+        <div id="bench-115">
+        <h4>[coll pmap] (-lookup hash-imap-int-test 500 nil)</h4>
+        <div id="chart-115">
+        </div>
+        </div>
+      
+      
+        <div id="bench-116">
+        <h4>[coll pmap] (assoc coll :g0 32)</h4>
+        <div id="chart-116">
+        </div>
+        </div>
+      
+      
+        <div id="bench-117">
+        <h4>[coll pmap] (loop [i 0 m coll] (if (< i 1000000) (recur (inc i) (assoc m :a 1)) m))</h4>
+        <div id="chart-117">
+        </div>
+        </div>
+      
+      
+        <div id="bench-118">
+        <h4>[coll cljs.core.PersistentHashMap.EMPTY] (assoc coll :f0 1)</h4>
+        <div id="chart-118">
+        </div>
+        </div>
+      
+      
+      
+      
+        <div id="bench-119">
+        <h4>[] #{}</h4>
+        <div id="chart-119">
+        </div>
+        </div>
+      
+      
+        <div id="bench-120">
+        <h4>[] #{1 3 2}</h4>
+        <div id="chart-120">
+        </div>
+        </div>
+      
+      
+        <div id="bench-121">
+        <h4>[v [1 2 3]] (set v)</h4>
+        <div id="chart-121">
+        </div>
+        </div>
+      
+      
+        <div id="bench-122">
+        <h4>[] (hash-set 1 2 3)</h4>
+        <div id="chart-122">
+        </div>
+        </div>
+      
+      
+        <div id="bench-123">
+        <h4>[coll #{1 3 2}] (conj coll 4)</h4>
+        <div id="chart-123">
+        </div>
+        </div>
+      
+      
+        <div id="bench-124">
+        <h4>[coll #{1 3 2}] (get coll 2)</h4>
+        <div id="chart-124">
+        </div>
+        </div>
+      
+      
+        <div id="bench-125">
+        <h4>[coll #{1 3 2}] (contains? coll 2)</h4>
+        <div id="chart-125">
+        </div>
+        </div>
+      
+      
+        <div id="bench-126">
+        <h4>[coll #{1 3 2}] (coll 2)</h4>
+        <div id="chart-126">
+        </div>
+        </div>
+      
+      
+      
+      
+        <div id="bench-127">
+        <h4>[coll (range 500000)] (reduce + coll)</h4>
+        <div id="chart-127">
+        </div>
+        </div>
+      
+      
+      
+      
+        <div id="bench-128">
+        <h4>[s "{:foo [1 2 3]}"] (reader/read-string s)</h4>
+        <div id="chart-128">
+        </div>
+        </div>
+      
+      
+        <div id="bench-129">
+        <h4>[s big-str-data] (reader/read-string s)</h4>
+        <div id="chart-129">
+        </div>
+        </div>
+      
+      
+      
+      
+        <div id="bench-130">
+        <h4>[r (range 1000000)] (last r)</h4>
+        <div id="chart-130">
+        </div>
+        </div>
+      
+      
+      
+      
+        <div id="bench-131">
+        <h4>[r r] (last r)</h4>
+        <div id="chart-131">
+        </div>
+        </div>
+      
+      
+      
+      
+        <div id="bench-132">
+        <h4>[r r] (last r)</h4>
+        <div id="chart-132">
+        </div>
+        </div>
+      
+      
+      
+      
+        <div id="bench-133">
+        <h4>[s (seq ipmap)] (let [iter (seq-iter s)] (loop [v nil] (if (.hasNext iter) (recur (.next iter)) v)))</h4>
+        <div id="chart-133">
+        </div>
+        </div>
+      
+      
+      
+      
+        <div id="bench-134">
+        <h4>[] (let [iter (-iterator ipmap)] (loop [v nil] (if (.hasNext iter) (recur (.next iter)) v)))</h4>
+        <div id="chart-134">
+        </div>
+        </div>
+      
+      
+      
+      
+        <div id="bench-135">
+        <h4>[xs (range 512)] (last (for [x xs y xs] (+ x y)))</h4>
+        <div id="chart-135">
+        </div>
+        </div>
+      
+      
+        <div id="bench-136">
+        <h4>[xs (vec (range 512))] (last (for [x xs y xs] (+ x y)))</h4>
+        <div id="chart-136">
+        </div>
+        </div>
+      
+      
+        <div id="bench-137">
+        <h4>[a (Box. 0) xs (range 512)] (doseq [x xs y xs] (set! a -val (+ (.-val a) x)))</h4>
+        <div id="chart-137">
+        </div>
+        </div>
+      
+      
+        <div id="bench-138">
+        <h4>[a (Box. 0) xs (vec (range 512))] (doseq [x xs y xs] (set! a -val (+ (.-val a) x)))</h4>
+        <div id="chart-138">
+        </div>
+        </div>
+      
+      
+      
+      
+        <div id="bench-139">
+        <h4>[xs (into [] (range 1000000))] (r/reduce + (r/map inc (r/map inc (r/map inc xs))))</h4>
+        <div id="chart-139">
+        </div>
+        </div>
+      
+      
+      
+      
+        <div id="bench-140">
+        <h4>[xs (into [] (range 1000000))] (transduce (comp (map inc) (map inc) (map inc)) + 0 xs)</h4>
+        <div id="chart-140">
+        </div>
+        </div>
+      
+      
+      
+      
+        <div id="bench-141">
+        <h4>[xs (into-array (range 1000000))] (-> xs (.map inc) (.map inc) (.map inc) (.reduce (fn [a b] (+ a b)) 0))</h4>
+        <div id="chart-141">
+        </div>
+        </div>
+      
+      
+      
+      
+        <div id="bench-142">
+        <h4>[xs (range 1000000)] (reduce + 0 (map inc (map inc (map inc xs))))</h4>
+        <div id="chart-142">
+        </div>
+        </div>
+      
+      
+      
+      
+        <div id="bench-143">
+        <h4>[xs (range 1000000)] (transduce (comp (map inc) (map inc) (map inc)) + 0 xs)</h4>
+        <div id="chart-143">
+        </div>
+        </div>
+      
+      
+      
+      
+        <div id="bench-144">
+        <h4>[] (simple-multi :foo)</h4>
+        <div id="chart-144">
+        </div>
+        </div>
+      
+      
+      
+      
+        <div id="bench-145">
+        <h4>[f array] (f 1 2 3 4 5 6 7 8 9 0)</h4>
+        <div id="chart-145">
+        </div>
+        </div>
+      
+      
+        <div id="bench-146">
+        <h4>[f vector] (f 1 2 3 4 5 6 7 8 9 0)</h4>
+        <div id="chart-146">
+        </div>
+        </div>
+      
+      
+        <div id="bench-147">
+        <h4>[] (= 1 1 1 1 1 1 1 1 1 0)</h4>
+        <div id="chart-147">
+        </div>
+        </div>
+      
+      
+      
+      
+        <div id="bench-148">
+        <h4>[v (into [] (range 1000000))] (loop [[x & xs] v] (if-not (nil? xs) (recur xs) x))</h4>
+        <div id="chart-148">
         </div>
         </div>
       
