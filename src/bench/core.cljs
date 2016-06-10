@@ -20,27 +20,24 @@
 
 (defprotocol IFoo (foo [x]))
 
-#_(defn init!
-  []
-  (benchmark-suite [x 1] (identity x))
-
-  ;; array-reduce & ci-reduce
-  (let [arr  (array)
-        sum  (fn [a b] (+ a b))]
-    (dotimes [i 10000]
-      (.push arr i))
-    (benchmark-suite [coll (seq arr)] (ci-reduce coll + 0))
-    (benchmark-suite [coll (seq arr)] (ci-reduce coll sum 0))
-    (benchmark-suite [coll arr] (array-reduce coll + 0))
-    (benchmark-suite [coll arr] (array-reduce coll sum 0)))
-
-
-  )
 
 (defn init!
   []
   (println ";; identity")
   (simple-benchmark [x 1] (identity x) 100000000)
+
+  (println ";; symbol construction")
+  (simple-benchmark [] (symbol 'foo) 1000000)
+
+  (println ";; array-reduce & ci-reduce")
+  (let [arr  (array)
+        sum  (fn [a b] (+ a b))]
+    (dotimes [i 10000]
+      (.push arr i))
+    (simple-benchmark [coll (seq arr)] (ci-reduce coll + 0) 100)
+    (simple-benchmark [coll (seq arr)] (ci-reduce coll sum 0) 100)
+    (simple-benchmark [coll arr] (array-reduce coll + 0) 100)
+    (simple-benchmark [coll arr] (array-reduce coll sum 0) 100))
 
   )
 
