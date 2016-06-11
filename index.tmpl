@@ -71,8 +71,7 @@
 
       function get_ver(x) {
         var parts = x.split('.')
-                      .map(function(x) {return parseInt(x)})
-                      .map(function(x) {return zero(x)});
+                      .map(function(x) {return zero(parseInt(x))});
         return parts.join("-");
       }
 
