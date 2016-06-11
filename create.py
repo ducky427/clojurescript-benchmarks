@@ -1,5 +1,7 @@
 
 import csv
+import json
+
 from itertools import groupby
 from jinja2 import Environment, FileSystemLoader
 
@@ -38,6 +40,23 @@ def verify():
 
         return res
 
+fields = 'Version,Engine,Section,Name,Mean'.split(',')
+
+def jsonify():
+    with open('data.csv', 'r') as csvfile, open('data.json', 'w') as jsonfile:
+        reader = csv.reader(csvfile)
+        reader.next() # Ignore header
+        rows = []
+        for r in reader:
+            row = dict(zip(fields, r[:5]))
+            row['Mean'] = float(row['Mean'])
+            rows.append(row)
+
+        out = json.dumps(rows)
+        jsonfile.write(out)
+
+
 if __name__ == '__main__':
     items = verify()
     main(items)
+    jsonify()
