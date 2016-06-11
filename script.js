@@ -28,16 +28,16 @@ function compare_versions(x, y) {
 
 function get_points(points, engine) {
   var xs = points.filter(function(x) {
-    return x.engine == engine
+    return x.Engine == engine
   });
   return xs.map(function(x) {
-    return x.mean;
+    return x.Mean;
   });
 }
 
 function get_versions(points) {
   var versionsSet = new Set(points.map(function(x) {
-    return x.version
+    return x.Version;
   }));
   var versions = [];
   versionsSet.forEach(function(obj) {
@@ -54,6 +54,7 @@ var colors = {
   JSC: '#fdb863',
   SM: '#2c7bb6'
 };
+
 // d3.rgb("#2c7bb6").darker().toString();
 var backgroundColors = {
   V8: '#961113',
@@ -105,22 +106,20 @@ function plot_chart(id, title, points) {
   });
 }
 
-d3.csv("data.csv")
-  .row(function(d) {
-    return {
-      version: d.Version,
-      engine: d.Engine,
-      name: d.Name,
-      mean: +d.Mean
-    };
-  })
-  .get(function(error, rows) {
-    d3.selectAll('#benchmarks li')[0].forEach(function(obj, idx) {
-      var title = d3.select(obj).text();
-      var data_for_chart = rows.filter(function(x) {
-        return x.name == title;
-      });
-      plot_chart(idx + 1, title, data_for_chart);
+var r = new XMLHttpRequest();
+r.open("GET", "data.json", true);
+r.onreadystatechange = function () {
+  if (r.readyState != 4 || r.status != 200) return;
+  var rows = JSON.parse(r.responseText);
+
+  document.querySelectorAll("#benchmarks li").forEach(function(obj, idx) {
+    var title = obj.firstChild.textContent;
+    var data_for_chart = rows.filter(function(x) {
+      return x.Name == title;
     });
-    document.getElementById("loader").className = "";
+    plot_chart(idx + 1, title, data_for_chart);
   });
+  document.getElementById("loader").className = "";
+};
+
+r.send();
