@@ -2,6 +2,7 @@
 import csv
 import json
 
+from collections import defaultdict
 from itertools import groupby
 from jinja2 import Environment, FileSystemLoader
 
@@ -52,7 +53,13 @@ def jsonify():
             row['Mean'] = float(row['Mean'])
             rows.append(row)
 
-        out = json.dumps(rows)
+        result = defaultdict(list)
+        for r in rows:
+            k = r['Name']
+            r.pop('Name', None)
+            result[k].append(r)
+
+        out = json.dumps(result)
         jsonfile.write(out)
 
 

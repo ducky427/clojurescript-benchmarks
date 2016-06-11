@@ -1,4 +1,18 @@
 
+// Colors from http://colorbrewer2.org/
+var colors = {
+  V8: '#d7191c',
+  JSC: '#fdb863',
+  SM: '#2c7bb6'
+};
+
+// d3.rgb("#2c7bb6").darker().toString();
+var backgroundColors = {
+  V8: '#961113',
+  JSC: "#b18045",
+  SM: '#1e567f'
+};
+
 var pad = "00000";
 
 function left_pad(s) {
@@ -28,7 +42,7 @@ function compare_versions(x, y) {
 
 function get_points(points, engine) {
   var xs = points.filter(function(x) {
-    return x.Engine == engine
+    return x.Engine == engine;
   });
   return xs.map(function(x) {
     return x.Mean;
@@ -48,20 +62,6 @@ function get_versions(points) {
   return versions;
 }
 
-// Colors from http://colorbrewer2.org/
-var colors = {
-  V8: '#d7191c',
-  JSC: '#fdb863',
-  SM: '#2c7bb6'
-};
-
-// d3.rgb("#2c7bb6").darker().toString();
-var backgroundColors = {
-  V8: '#961113',
-  JSC: "#b18045",
-  SM: '#1e567f'
-};
-
 function plot_chart(id, title, points) {
   var data = {
     labels: get_versions(points)
@@ -79,7 +79,7 @@ function plot_chart(id, title, points) {
   var options = {
     title: {
       display: false,
-      text: 'Chart.js Line Chart'
+      text: title
     },
     scales: {
       xAxes: [{
@@ -114,11 +114,10 @@ r.onreadystatechange = function () {
 
   document.querySelectorAll("#benchmarks li").forEach(function(obj, idx) {
     var title = obj.firstChild.textContent;
-    var data_for_chart = rows.filter(function(x) {
-      return x.Name == title;
-    });
+    var data_for_chart = rows[title];
     plot_chart(idx + 1, title, data_for_chart);
   });
+
   document.getElementById("loader").className = "";
 };
 
