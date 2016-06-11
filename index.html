@@ -1613,11 +1613,15 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.4/Chart.min.js"></script>
     <script type="text/javascript">
-      var zero = d3.format("05d");
+      var pad = "00000";
+
+      function left_pad(s) {
+        return pad.substring(0, pad.length - s.length) + s;
+      }
 
       function get_ver(x) {
         var parts = x.split('.')
-                      .map(function(x) {return zero(parseInt(x))});
+                      .map(function(x) {return left_pad(parseInt(x))});
         return parts.join("-");
       }
 
@@ -1641,22 +1645,30 @@
         });
       }
 
+      function get_versions(points) {
+        var versionsSet = new Set(points.map(function(x) {return x.version}));
+        var versions = [];
+        versionsSet.forEach(function(obj) {
+          versions.push(obj);
+        });
+
+        versions.sort(compare_versions);
+        return versions;
+      }
+
       // Colors from http://colorbrewer2.org/
       var colors = {V8: '#d7191c', JSC: '#fdb863', SM: '#2c7bb6'};
       // d3.rgb("#2c7bb6").darker().toString();
       var backgroundColors = {V8: '#961113', JSC: "#b18045", SM: '#1e567f'};
 
       function plot_chart(id, title, points) {
-        var versions = d3.set(points.map(function(x) {return x.version})).values();
-        versions.sort(compare_versions);
-        var data = {labels: versions};
+        var data = {labels: get_versions(points)};
         data['datasets'] = ["V8", "JSC", "SM"].map(function(e) {
           return {data: get_points(points, e),
                   label: e,
                   fill: false,
                   borderColor: colors[e],
                   backgroundColor: backgroundColors[e]};
-
         });
 
         var options = {
