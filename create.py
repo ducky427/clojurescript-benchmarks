@@ -1,6 +1,7 @@
 
 import csv
 import json
+import sys
 
 from collections import defaultdict
 from itertools import groupby
@@ -19,13 +20,13 @@ class _Counter(object):
     self.value += 1
     return v
 
-def main(items):
+def main(items, debug):
     env = Environment(loader=FileSystemLoader('.'))
     env.globals['counter']=_Counter
     template = env.get_template('index.tmpl')
 
     with open('index.html', 'wb') as f:
-        f.write(template.render(items=items))
+        f.write(template.render(items=items, debug=debug))
 
 def verify():
     with open('data.csv') as f:
@@ -64,6 +65,7 @@ def jsonify():
 
 
 if __name__ == '__main__':
+    debug = sys.argv[1] == "true"
     items = verify()
-    main(items)
+    main(items, debug)
     jsonify()

@@ -1,0 +1,17 @@
+{
+  "name": "cljsbenchmarks",
+  "version": "0.0.0",
+  "authors": [
+    "Rohit Aggarwal <rohit.aggarwal@gmail.com>"
+  ],
+  "dependencies": {
+    "bootstrap": "3.3.6",
+    "Chart.js": "2.1.4"
+  },
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "bower_components"
+  ]
+}

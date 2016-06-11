@@ -6,7 +6,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>ClojureScript Benchmarks</title>
 
+    {% if debug%}
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+    {% else %}
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+    {% endif %}
+
     <link rel="stylesheet" type="text/css" href="spinner.css">
 
   </head>
@@ -64,7 +69,13 @@
       {% endfor %}
     </div>
 
+    {% if debug%}
+    <script src="bower_components/Chart.js/dist/Chart.min.js"></script>
+    <script src="script.js"></script>
+    {% else %}
     <script src="//cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.4/Chart.min.js"></script>
     <script src="script.min.js"></script>
+    {% endif %}
+
   </body>
 </html>
