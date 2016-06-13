@@ -117,8 +117,8 @@
     (simple-benchmark [] (-rest v) 1000000))
 
   (println ";; transient vector, conj! 1000000 items")
-  (simple-benchmark [v (transient [])]
-                    (loop [i 0 v v]
+  (simple-benchmark [v []]
+                    (loop [i 0 v (transient v)]
                       (if (> i 1000000)
                         (persistent! v)
                         (recur (inc i) (conj! v i))))
@@ -267,8 +267,8 @@
     (simple-benchmark [coll cljs.core.PersistentHashMap.EMPTY] (assoc coll :f0 1) 1000000))
 
   (println ";; transient map, conj! 100000 items")
-  (simple-benchmark [m (transient cljs.core.PersistentHashMap.EMPTY)]
-                    (loop [i 0 m m]
+  (simple-benchmark [m cljs.core.PersistentHashMap.EMPTY]
+                    (loop [i 0 m (transient m)]
                       (if (> i 100000)
                         (persistent! m)
                         (recur (inc i) (assoc! m i i))))
