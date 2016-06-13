@@ -126,9 +126,9 @@
 
   (println ";;; vector equality")
   (simple-benchmark
-   [a (into [] (range 1000000))
-    b (into [] (range 1000000))]
-   (= a b) 1)
+   [a (into [] (range 100000))
+    b (into [] (range 100000))]
+   (= a b) 10)
 
   (println ";;; keyword compare")
   (let [seed ["amelia" "olivia" "jessica" "emily" "lily" "ava" "isla" "sophie" "mia" "isabella" "evie" "poppy" "ruby" "grace" "sophia" "chloe" "freya" "isabelle" "ella" "charlotte" "scarlett" "daisy" "lola" "holly" "eva" "lucy" "millie" "phoebe" "layla" "maisie" "sienna" "alice" "florence" "lilly" "ellie" "erin" "elizabeth" "imogen" "summer" "molly" "hannah" "sofia" "abigail" "jasmine" "matilda" "megan" "rosie" "lexi" "lacey" "emma" "amelie" "maya" "gracie" "emilia" "georgia" "hollie" "evelyn" "eliza" "amber" "eleanor" "bella" "amy" "brooke" "leah" "esme" "harriet" "anna" "katie" "zara" "willow" "elsie" "annabelle" "bethany" "faith" "madison" "isabel" "rose" "julia" "martha" "maryam" "paige" "heidi" "maddison" "niamh" "skye" "aisha" "mollie" "ivy" "francesca" "darcey" "maria" "zoe" "keira" "sarah" "tilly" "isobel" "violet" "lydia" "sara" "caitlin"]]
@@ -143,11 +143,11 @@
 
   (println ";;; reduce lazy-seqs, vectors, ranges")
   (simple-benchmark [coll (take 100000 (iterate inc 0))] (reduce + 0 coll) 1)
-  (simple-benchmark [coll (range 1000000)] (reduce + 0 coll) 1)
-  (simple-benchmark [coll (into [] (range 1000000))] (reduce + 0 coll) 1)
+  (simple-benchmark [coll (range 100000)] (reduce + 0 coll) 10)
+  (simple-benchmark [coll (into [] (range 100000))] (reduce + 0 coll) 10)
 
   (println ";; apply")
-  (simple-benchmark [coll (into [] (range 1000000))] (apply + coll) 1)
+  (simple-benchmark [coll (into [] (range 100000))] (apply + coll) 10)
   (simple-benchmark [] (list 1 2 3 4 5) 1000000)
   (simple-benchmark [xs (array-seq (array 1 2 3 4 5))] (apply list xs) 1000000)
   (simple-benchmark [xs (list 1 2 3 4 5)] (apply list xs) 1000000)
@@ -301,7 +301,7 @@
     (simple-benchmark [s big-str-data] (reader/read-string s) 1000))
 
   (println ";;; range")
-  (simple-benchmark [r (range 1000000)] (last r) 1)
+  (simple-benchmark [r (range 100000)] (last r) 10)
 
   (let [r         (ints-seq 1000000)]
     (println ";;; lazy-seq - first run")
@@ -335,20 +335,20 @@
   (simple-benchmark [a (Box. 0) xs (vec (range 512))] (doseq [x xs y xs] (set! a -val (+ (.-val a) x))) 4)
 
   (println ";; reducers")
-  (simple-benchmark [xs (into [] (range 1000000))] (r/reduce + (r/map inc (r/map inc (r/map inc xs)))) 1)
+  (simple-benchmark [xs (into [] (range 100000))] (r/reduce + (r/map inc (r/map inc (r/map inc xs)))) 10)
 
   (println ";; transducers")
-  (simple-benchmark [xs (into [] (range 1000000))] (transduce (comp (map inc) (map inc) (map inc)) + 0 xs) 1)
+  (simple-benchmark [xs (into [] (range 100000))] (transduce (comp (map inc) (map inc) (map inc)) + 0 xs) 10)
 
   (println ";; primitive array reduce 1000000 many ops")
-  (simple-benchmark [xs (into-array (range 1000000))]
-                    (-> xs (.map inc) (.map inc) (.map inc) (.reduce (fn [a b] (+ a b)) 0)) 1)
+  (simple-benchmark [xs (into-array (range 100000))]
+                    (-> xs (.map inc) (.map inc) (.map inc) (.reduce (fn [a b] (+ a b)) 0)) 10)
 
-  (println ";; reduce range 1000000 many ops")
-  (simple-benchmark [xs (range 1000000)] (reduce + 0 (map inc (map inc (map inc xs)))) 1)
+  (println ";; reduce range 100000 many ops")
+  (simple-benchmark [xs (range 100000)] (reduce + 0 (map inc (map inc (map inc xs)))) 10)
 
-  (println ";; transduce range 1000000 many ops ")
-  (simple-benchmark [xs (range 1000000)] (transduce (comp (map inc) (map inc) (map inc)) + 0 xs) 1)
+  (println ";; transduce range 100000 many ops ")
+  (simple-benchmark [xs (range 100000)] (transduce (comp (map inc) (map inc) (map inc)) + 0 xs) 10)
 
   (println ";; multimethods")
   (simple-benchmark [] (simple-multi :foo) 1000000)
@@ -360,7 +360,7 @@
   (simple-benchmark [] (= 1 1 1 1 1 1 1 1 1 0) 100000)
 
   (println ";; Destructuring a sequence")
-  (simple-benchmark [v (into [] (range 1000000))]
+  (simple-benchmark [v (into [] (range 100000))]
                     (loop [[x & xs] v]
                       (if-not (nil? xs)
                         (recur xs)
