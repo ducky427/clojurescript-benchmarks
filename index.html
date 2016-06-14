@@ -185,12 +185,12 @@
         
         <h4>transient vector, conj! 1000000 items</h4>
         
-        <li><a href="#bench-53">[v (transient [])] (loop [i 0 v v] (if (> i 1000000) (persistent! v) (recur (inc i) (conj! v i))))</a></li>
+        <li><a href="#bench-53">[v []] (loop [i 0 v (transient v)] (if (> i 1000000) (persistent! v) (recur (inc i) (conj! v i))))</a></li>
         
         
         <h4>vector equality</h4>
         
-        <li><a href="#bench-54">[a (into [] (range 1000000)) b (into [] (range 1000000))] (= a b)</a></li>
+        <li><a href="#bench-54">[a (into [] (range 100000)) b (into [] (range 100000))] (= a b)</a></li>
         
         
         <h4>keyword compare</h4>
@@ -204,14 +204,14 @@
         
         <li><a href="#bench-57">[coll (take 100000 (iterate inc 0))] (reduce + 0 coll)</a></li>
         
-        <li><a href="#bench-58">[coll (range 1000000)] (reduce + 0 coll)</a></li>
+        <li><a href="#bench-58">[coll (range 100000)] (reduce + 0 coll)</a></li>
         
-        <li><a href="#bench-59">[coll (into [] (range 1000000))] (reduce + 0 coll)</a></li>
+        <li><a href="#bench-59">[coll (into [] (range 100000))] (reduce + 0 coll)</a></li>
         
         
         <h4>apply</h4>
         
-        <li><a href="#bench-60">[coll (into [] (range 1000000))] (apply + coll)</a></li>
+        <li><a href="#bench-60">[coll (into [] (range 100000))] (apply + coll)</a></li>
         
         <li><a href="#bench-61">[] (list 1 2 3 4 5)</a></li>
         
@@ -358,7 +358,7 @@
         
         <h4>transient map, conj! 100000 items</h4>
         
-        <li><a href="#bench-120">[m (transient cljs.core.PersistentHashMap.EMPTY)] (loop [i 0 m m] (if (> i 100000) (persistent! m) (recur (inc i) (assoc! m i i))))</a></li>
+        <li><a href="#bench-120">[m cljs.core.PersistentHashMap.EMPTY] (loop [i 0 m (transient m)] (if (> i 100000) (persistent! m) (recur (inc i) (assoc! m i i))))</a></li>
         
         
         <h4>set ops</h4>
@@ -394,7 +394,7 @@
         
         <h4>range</h4>
         
-        <li><a href="#bench-132">[r (range 1000000)] (last r)</a></li>
+        <li><a href="#bench-132">[r (range 100000)] (last r)</a></li>
         
         
         <h4>lazy-seq - first run</h4>
@@ -430,27 +430,27 @@
         
         <h4>reducers</h4>
         
-        <li><a href="#bench-141">[xs (into [] (range 1000000))] (r/reduce + (r/map inc (r/map inc (r/map inc xs))))</a></li>
+        <li><a href="#bench-141">[xs (into [] (range 100000))] (r/reduce + (r/map inc (r/map inc (r/map inc xs))))</a></li>
         
         
         <h4>transducers</h4>
         
-        <li><a href="#bench-142">[xs (into [] (range 1000000))] (transduce (comp (map inc) (map inc) (map inc)) + 0 xs)</a></li>
+        <li><a href="#bench-142">[xs (into [] (range 100000))] (transduce (comp (map inc) (map inc) (map inc)) + 0 xs)</a></li>
         
         
         <h4>primitive array reduce 1000000 many ops</h4>
         
-        <li><a href="#bench-143">[xs (into-array (range 1000000))] (-> xs (.map inc) (.map inc) (.map inc) (.reduce (fn [a b] (+ a b)) 0))</a></li>
+        <li><a href="#bench-143">[xs (into-array (range 100000))] (-> xs (.map inc) (.map inc) (.map inc) (.reduce (fn [a b] (+ a b)) 0))</a></li>
         
         
-        <h4>reduce range 1000000 many ops</h4>
+        <h4>reduce range 100000 many ops</h4>
         
-        <li><a href="#bench-144">[xs (range 1000000)] (reduce + 0 (map inc (map inc (map inc xs))))</a></li>
+        <li><a href="#bench-144">[xs (range 100000)] (reduce + 0 (map inc (map inc (map inc xs))))</a></li>
         
         
-        <h4>transduce range 1000000 many ops</h4>
+        <h4>transduce range 100000 many ops</h4>
         
-        <li><a href="#bench-145">[xs (range 1000000)] (transduce (comp (map inc) (map inc) (map inc)) + 0 xs)</a></li>
+        <li><a href="#bench-145">[xs (range 100000)] (transduce (comp (map inc) (map inc) (map inc)) + 0 xs)</a></li>
         
         
         <h4>multimethods</h4>
@@ -469,7 +469,7 @@
         
         <h4>Destructuring a sequence</h4>
         
-        <li><a href="#bench-150">[v (into [] (range 1000000))] (loop [[x & xs] v] (if-not (nil? xs) (recur xs) x))</a></li>
+        <li><a href="#bench-150">[v (into [] (range 100000))] (loop [[x & xs] v] (if-not (nil? xs) (recur xs) x))</a></li>
         
         
       </ul>
@@ -866,7 +866,7 @@
       
       
         <div id="bench-53" style="width:80%;">
-        <h4>[v (transient [])] (loop [i 0 v v] (if (> i 1000000) (persistent! v) (recur (inc i) (conj! v i))))</h4>
+        <h4>[v []] (loop [i 0 v (transient v)] (if (> i 1000000) (persistent! v) (recur (inc i) (conj! v i))))</h4>
         <a href="#benchmarks">Top</a>
         <canvas id="chart-53" height="100"></canvas>
         </div>
@@ -875,7 +875,7 @@
       
       
         <div id="bench-54" style="width:80%;">
-        <h4>[a (into [] (range 1000000)) b (into [] (range 1000000))] (= a b)</h4>
+        <h4>[a (into [] (range 100000)) b (into [] (range 100000))] (= a b)</h4>
         <a href="#benchmarks">Top</a>
         <canvas id="chart-54" height="100"></canvas>
         </div>
@@ -907,14 +907,14 @@
       
       
         <div id="bench-58" style="width:80%;">
-        <h4>[coll (range 1000000)] (reduce + 0 coll)</h4>
+        <h4>[coll (range 100000)] (reduce + 0 coll)</h4>
         <a href="#benchmarks">Top</a>
         <canvas id="chart-58" height="100"></canvas>
         </div>
       
       
         <div id="bench-59" style="width:80%;">
-        <h4>[coll (into [] (range 1000000))] (reduce + 0 coll)</h4>
+        <h4>[coll (into [] (range 100000))] (reduce + 0 coll)</h4>
         <a href="#benchmarks">Top</a>
         <canvas id="chart-59" height="100"></canvas>
         </div>
@@ -923,7 +923,7 @@
       
       
         <div id="bench-60" style="width:80%;">
-        <h4>[coll (into [] (range 1000000))] (apply + coll)</h4>
+        <h4>[coll (into [] (range 100000))] (apply + coll)</h4>
         <a href="#benchmarks">Top</a>
         <canvas id="chart-60" height="100"></canvas>
         </div>
@@ -1361,7 +1361,7 @@
       
       
         <div id="bench-120" style="width:80%;">
-        <h4>[m (transient cljs.core.PersistentHashMap.EMPTY)] (loop [i 0 m m] (if (> i 100000) (persistent! m) (recur (inc i) (assoc! m i i))))</h4>
+        <h4>[m cljs.core.PersistentHashMap.EMPTY] (loop [i 0 m (transient m)] (if (> i 100000) (persistent! m) (recur (inc i) (assoc! m i i))))</h4>
         <a href="#benchmarks">Top</a>
         <canvas id="chart-120" height="100"></canvas>
         </div>
@@ -1453,7 +1453,7 @@
       
       
         <div id="bench-132" style="width:80%;">
-        <h4>[r (range 1000000)] (last r)</h4>
+        <h4>[r (range 100000)] (last r)</h4>
         <a href="#benchmarks">Top</a>
         <canvas id="chart-132" height="100"></canvas>
         </div>
@@ -1528,7 +1528,7 @@
       
       
         <div id="bench-141" style="width:80%;">
-        <h4>[xs (into [] (range 1000000))] (r/reduce + (r/map inc (r/map inc (r/map inc xs))))</h4>
+        <h4>[xs (into [] (range 100000))] (r/reduce + (r/map inc (r/map inc (r/map inc xs))))</h4>
         <a href="#benchmarks">Top</a>
         <canvas id="chart-141" height="100"></canvas>
         </div>
@@ -1537,7 +1537,7 @@
       
       
         <div id="bench-142" style="width:80%;">
-        <h4>[xs (into [] (range 1000000))] (transduce (comp (map inc) (map inc) (map inc)) + 0 xs)</h4>
+        <h4>[xs (into [] (range 100000))] (transduce (comp (map inc) (map inc) (map inc)) + 0 xs)</h4>
         <a href="#benchmarks">Top</a>
         <canvas id="chart-142" height="100"></canvas>
         </div>
@@ -1546,7 +1546,7 @@
       
       
         <div id="bench-143" style="width:80%;">
-        <h4>[xs (into-array (range 1000000))] (-> xs (.map inc) (.map inc) (.map inc) (.reduce (fn [a b] (+ a b)) 0))</h4>
+        <h4>[xs (into-array (range 100000))] (-> xs (.map inc) (.map inc) (.map inc) (.reduce (fn [a b] (+ a b)) 0))</h4>
         <a href="#benchmarks">Top</a>
         <canvas id="chart-143" height="100"></canvas>
         </div>
@@ -1555,7 +1555,7 @@
       
       
         <div id="bench-144" style="width:80%;">
-        <h4>[xs (range 1000000)] (reduce + 0 (map inc (map inc (map inc xs))))</h4>
+        <h4>[xs (range 100000)] (reduce + 0 (map inc (map inc (map inc xs))))</h4>
         <a href="#benchmarks">Top</a>
         <canvas id="chart-144" height="100"></canvas>
         </div>
@@ -1564,7 +1564,7 @@
       
       
         <div id="bench-145" style="width:80%;">
-        <h4>[xs (range 1000000)] (transduce (comp (map inc) (map inc) (map inc)) + 0 xs)</h4>
+        <h4>[xs (range 100000)] (transduce (comp (map inc) (map inc) (map inc)) + 0 xs)</h4>
         <a href="#benchmarks">Top</a>
         <canvas id="chart-145" height="100"></canvas>
         </div>
@@ -1605,7 +1605,7 @@
       
       
         <div id="bench-150" style="width:80%;">
-        <h4>[v (into [] (range 1000000))] (loop [[x & xs] v] (if-not (nil? xs) (recur xs) x))</h4>
+        <h4>[v (into [] (range 100000))] (loop [[x & xs] v] (if-not (nil? xs) (recur xs) x))</h4>
         <a href="#benchmarks">Top</a>
         <canvas id="chart-150" height="100"></canvas>
         </div>
