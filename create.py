@@ -23,9 +23,9 @@ class _Counter(object):
 def main(items, debug):
     env = Environment(loader=FileSystemLoader('.'))
     env.globals['counter']=_Counter
-    template = env.get_template('index.tmpl')
+    template = env.get_template('graph.tmpl')
 
-    with open('index.html', 'wb') as f:
+    with open('graph.html', 'wb') as f:
         f.write(template.render(items=items, debug=debug))
 
 def verify():

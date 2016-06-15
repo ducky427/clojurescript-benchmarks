@@ -106,19 +106,20 @@ function plot_chart(id, title, points) {
   });
 }
 
-var r = new XMLHttpRequest();
-r.open("GET", "data.json", true);
-r.onreadystatechange = function () {
-  if (r.readyState != 4 || r.status != 200) return;
-  var rows = JSON.parse(r.responseText);
+function get_data(f_name) {
+  var r = new XMLHttpRequest();
+  r.open("GET", f_name, true);
+  r.onreadystatechange = function () {
+    if (r.readyState != 4 || r.status != 200) return;
+    var rows = JSON.parse(r.responseText);
 
-  document.querySelectorAll("#benchmarks li").forEach(function(obj, idx) {
-    var title = obj.firstChild.textContent;
-    var data_for_chart = rows[title];
-    plot_chart(idx + 1, title, data_for_chart);
-  });
+    document.querySelectorAll("#benchmarks li").forEach(function(obj, idx) {
+      var title = obj.firstChild.textContent;
+      var data_for_chart = rows[title];
+      plot_chart(idx + 1, title, data_for_chart);
+    });
 
-  document.getElementById("loader").className = "";
-};
-
-r.send();
+    document.getElementById("loader").className = "";
+  };
+  r.send();
+}
