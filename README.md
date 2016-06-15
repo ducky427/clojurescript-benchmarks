@@ -2,6 +2,8 @@
 
 This project contains code to run certain micro benchmarks against various version of ClojureScript on different JavaScript engines.
 
+A good article about benchmarking JS code is [here](http://calendar.perfplanet.com/2010/bulletproof-javascript-benchmarks/).
+
 ## How to run these benchmarks
 
 1. Install the 3 JavaScript engines - JavaScriptCore, v8 and SpiderMonkey. Installation notes for [Linux](https://github.com/ducky427/clojurescript-benchmarks/wiki/Installation-Notes) and [OS X](https://github.com/clojure/clojurescript/wiki/Running-the-tests). Also set the appropriate environment variables - `V8_HOME`, `SPIDERMONKEY_HOME` and making sure `jsc` is on the path.
