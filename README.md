@@ -1,6 +1,6 @@
 # Clojurescript Benchmarks
 
-This project contains code to run certain micro benchmarks against various version of ClojureScipt on different Javascript engines.
+This project contains code to run certain micro benchmarks against various version of ClojureScript on different Javascript engines.
 
 ## How to run these benchmarks
 
