@@ -14,7 +14,7 @@ A good article about benchmarking JS code is [here](http://calendar.perfplanet.c
 
 1. To select which versions to run the benchmarks against, edit `versions` variable in `run.py`. By default, it'll run it against all releases since 1.7+.
 
-1. Run `python run.py`. This will produce a file `dataYYYYMMDD_HHmmSS.csv` which has all the results.
+1. Run `python run.py`. This will produce a file `data_YYYYMMDD_HHmmSS.csv` which has all the results.
 
 ### Inspiration
 

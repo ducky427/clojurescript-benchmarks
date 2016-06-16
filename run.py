@@ -4,8 +4,7 @@ import os
 import subprocess
 import sys
 import time
-
-from collections import defaultdict
+import traceback
 
 # Broken versions: '1.7.145', '1.7.122', '1.7.107',
 
@@ -61,8 +60,8 @@ def benchmark(writer, version):
             try:
                 title, stats = get_stats(line)
                 writer.writerow([version, engine, section, title] + [stats.get(m) for m in metrics])
-            except:
-                print sys.exc_info()[0]
+            except Exception as e:
+                traceback.print_exc()
         else:
             print "Unrecognised: ", line
 
