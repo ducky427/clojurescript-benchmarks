@@ -81,5 +81,6 @@ if __name__ == '__main__':
     filename = 'data_{0}.csv'.format(time.strftime("%Y%m%d_%H%M%S"))
     with open(filename, 'wb') as f:
         writer = csv.writer(f)
-        writer.writerow(["Version", "FileSize" ,"Engine", "Section", "Name", "Mean", "Deviation", "MOE", "RME", "SEM"])
+        writer.writerow(["Version", "FileSize" ,"Engine", "Section", "Name",
+                         "Mean", "Deviation", "MOE", "RME", "SEM"])
         main(writer)
