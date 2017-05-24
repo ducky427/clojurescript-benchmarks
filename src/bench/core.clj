@@ -1,6 +1,6 @@
 (ns bench.core)
 
-(def quick? true)
+(def quick? false)
 
 (defmacro simple-benchmark
   [bindings expr iterations]

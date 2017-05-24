@@ -15,10 +15,11 @@
 
 (defn get-metrics
   [results]
-  (into {}
-        (map (fn [x]
-               [x (gobj/get results x)])
-             metrics)))
+  (reduce
+    (fn [acc x]
+      (assoc acc x (gobj/get results x)))
+    {}
+    metrics))
 
 (defprotocol IFoo (foo [x]))
 

@@ -1,6 +1,7 @@
 
 import csv
 import os
+import os.path
 import subprocess
 import sys
 import time
@@ -10,9 +11,12 @@ import traceback
 
 versions = ['1.7.10', '1.7.28', '1.7.48', '1.7.58', '1.7.166',
             '1.7.170', '1.7.189', '1.7.228', '1.8.34', '1.8.40',
-            '1.8.51', '1.9.14', '1.9.35', '1.9.36']
+            '1.8.51', '1.9.14', '1.9.35', '1.9.36', '1.9.76',
+            '1.9.89', '1.9.198', '1.9.211', '1.9.216', '1.9.225',
+            '1.9.227', '1.9.229', '1.9.293', '1.9.456', '1.9.473',
+            '1.9.493', '1.9.494', '1.9.518', '1.9.521', '1.9.542']
 
-#versions = ['1.9.36']
+# versions = ['1.9.542']
 
 def get_stats(line):
     parts = line.split("||")
@@ -46,6 +50,7 @@ metrics = ["mean", "deviation", "moe", "rme", "sem"]
 def benchmark(writer, version):
     engine = None
     section = None
+    file_size = os.path.getsize('resources/public/js/compiled/bench.js')
     for line in runProcess('sh run.sh'):
         if not line:
             continue
@@ -59,7 +64,7 @@ def benchmark(writer, version):
             assert section is not None, "No section found!"
             try:
                 title, stats = get_stats(line)
-                writer.writerow([version, engine, section, title] + [stats.get(m) for m in metrics])
+                writer.writerow([version, file_size, engine, section, title] + [stats.get(m) for m in metrics])
             except Exception as e:
                 traceback.print_exc()
         else:
@@ -76,5 +81,5 @@ if __name__ == '__main__':
     filename = 'data_{0}.csv'.format(time.strftime("%Y%m%d_%H%M%S"))
     with open(filename, 'wb') as f:
         writer = csv.writer(f)
-        writer.writerow(["Version", "Engine", "Section", "Name", "Mean", "Deviation", "MOE", "RME", "SEM"])
+        writer.writerow(["Version", "FileSize" ,"Engine", "Section", "Name", "Mean", "Deviation", "MOE", "RME", "SEM"])
         main(writer)

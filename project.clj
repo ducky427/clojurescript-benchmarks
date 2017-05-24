@@ -4,14 +4,14 @@
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
 
-  :min-lein-version "2.6.1"
+  :min-lein-version "2.7.1"
 
   :dependencies [[org.clojure/clojure "1.8.0"]
                  [org.clojure/clojurescript ~(System/getenv "CLJS_VERSION")]
-                 [cljsjs/benchmark "2.1.0-1"]]
+                 [cljsjs/benchmark "2.1.4-0"]]
 
-  :plugins [[lein-cljfmt "0.5.3"]
-            [lein-cljsbuild "1.1.3" :exclusions [[org.clojure/clojure]]]
+  :plugins [[lein-cljfmt "0.5.6"]
+            [lein-cljsbuild "1.1.6" :exclusions [[org.clojure/clojure]]]
             [lein-ancient "0.6.10"]]
 
   :source-paths ["src"]

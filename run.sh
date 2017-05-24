@@ -6,4 +6,4 @@ echo "SM"
 ${SPIDERMONKEY_HOME}/js -f resources/public/js/compiled/bench.js
 
 echo "JSC"
-jsc -f resources/public/js/compiled/bench.js
+${JSC_HOME}/jsc -f resources/public/js/compiled/bench.js
