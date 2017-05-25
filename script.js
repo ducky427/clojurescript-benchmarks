@@ -62,7 +62,7 @@ function get_versions(points) {
   return versions;
 }
 
-function plot_chart(id, title, points) {
+function plot_chart(div_id, title, points) {
   var data = {
     labels: get_versions(points)
   };
@@ -72,7 +72,8 @@ function plot_chart(id, title, points) {
       label: e,
       fill: false,
       borderColor: colors[e],
-      backgroundColor: backgroundColors[e]
+      backgroundColor: backgroundColors[e],
+      lineTension: 0
     };
   });
 
@@ -97,7 +98,7 @@ function plot_chart(id, title, points) {
 
     }
   };
-  var ctx = document.getElementById("chart-" + id).getContext('2d');
+  var ctx = document.getElementById(div_id).getContext('2d');
 
   new Chart(ctx, {
     type: 'line',
@@ -106,20 +107,64 @@ function plot_chart(id, title, points) {
   });
 }
 
-function get_data(f_name) {
+function get_json(f_name, cb) {
   var r = new XMLHttpRequest();
   r.open("GET", f_name, true);
   r.onreadystatechange = function () {
     if (r.readyState != 4 || r.status != 200) return;
     var rows = JSON.parse(r.responseText);
+    cb(rows);
+  };
+  r.send();
+}
 
+function process_stats(f_name) {
+  get_json(f_name, function(rows) {
     document.querySelectorAll("#benchmarks li").forEach(function(obj, idx) {
       var title = obj.firstChild.textContent;
       var data_for_chart = rows[title];
-      plot_chart(idx + 1, title, data_for_chart);
+      var div_id = "chart-" + (idx + 1);
+      plot_chart(div_id, title, data_for_chart);
     });
-
     document.getElementById("loader").className = "";
-  };
-  r.send();
+  });
+}
+
+function process_sizes(f_name) {
+  get_json(f_name, function(rows) {
+    var ctx = document.getElementById("filesize").getContext('2d');
+
+    var options = {
+      title: {
+        display: false,
+        text: "File Size"
+      },
+      scales: {
+        xAxes: [{
+          scaleLabel: {
+            display: true,
+            labelString: 'Version'
+          }
+        }],
+        yAxes: [{
+          scaleLabel: {
+            display: true,
+            labelString: 'Size (in bytes)'
+          }
+        }]
+      }
+    };
+    var data = {
+      labels: get_versions(rows)
+    };
+    var chart_data = rows.map(function(x) {
+      return x.FileSize;
+    });
+    data['datasets'] = [{data: chart_data, fill: false, label: "Minified size", lineTension: 0}];
+    new Chart(ctx, {
+      type: 'line',
+      data: data,
+      options: options
+    });
+  });
 }

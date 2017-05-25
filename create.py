@@ -43,25 +43,45 @@ def verify():
         return res
 
 fields = 'Version,Engine,Section,Name,Mean'.split(',')
+fields_w_header = 'Version,FileSize,Engine,Section,Name,Mean'.split(',')
 
 def jsonify():
-    with open('data.csv', 'r') as csvfile, open('data.json', 'w') as jsonfile:
+    with open('data.csv', 'r') as csvfile:
         reader = csv.reader(csvfile)
-        reader.next() # Ignore header
+        header = reader.next()
+        header_present = 'FileSize' in header
+
+        file_sizes = []
+        file_versions_added = set()
+
         rows = []
         for r in reader:
-            row = dict(zip(fields, r[:5]))
+            if header_present:
+                row = dict(zip(fields_w_header, r[:6]))
+            else:
+                row = dict(zip(fields, r[:5]))
+
+            if header_present and (row['Version'] not in file_versions_added):
+                file_versions_added.add(row['Version'])
+                file_sizes.append({"Version": row['Version'], "FileSize": int(row['FileSize'])})
+
             row['Mean'] = float(row['Mean'])
             rows.append(row)
 
-        result = defaultdict(list)
-        for r in rows:
-            k = r['Name']
-            r.pop('Name', None)
-            result[k].append(r)
+    result = defaultdict(list)
+    for r in rows:
+        k = r['Name']
+        r.pop('Name', None)
+        result[k].append(r)
 
+    with open('data.json', 'w') as jsonfile:
         out = json.dumps(result)
         jsonfile.write(out)
+
+    if header_present:
+        with open('sizes.json', 'w') as jsonfile:
+            jsonfile.write(json.dumps(file_sizes))
+
 
 
 if __name__ == '__main__':

@@ -5,8 +5,8 @@
     "Rohit Aggarwal <rohit.aggarwal@gmail.com>"
   ],
   "dependencies": {
-    "bootstrap": "3.3.6",
-    "Chart.js": "2.1.4"
+    "bootstrap": "3.3.7",
+    "Chart.js": "2.5.0"
   },
   "license": "MIT",
   "private": true,

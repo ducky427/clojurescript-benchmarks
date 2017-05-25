@@ -10,21 +10,18 @@
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
 
 
-    <link rel="stylesheet" type="text/css" href="../spinner.css">
+    <link rel="stylesheet" type="text/css" href="../../spinner.css">
 
   </head>
   <body>
 
     <div class="container">
       <h1>ClojureScript micro benchmarks over different releases</h1>
-      <div class="alert alert-warning" role="alert">
-        <h4>These benchmarks have been run through simple benchmarking code and not through <a href="https://benchmarkjs.com/">Benchmark.js</a>. Hence expect noise in these numbers and possibly a large margin of error.</h4>
-      </div>
       <h3>Setup</h3>
-      <p>These benchmarks were run on Mac OS X 10.11.5 with the following engines:</p>
+      <p>These benchmarks were run on Ubuntu 14.04.4 LTS (x64) with the following engines:</p>
       <ul>
-        <li>Javascript Core (JSC): Bundled with Safari Tech Preview version 9.1.2 (11601.7.4, 11602.1.35)</li>
-        <li>V8 (V8): v5.1.281.47</li>
+        <li>Javascript Core (JSC): Bundled with WebKit as of 2016-06-09</li>
+        <li>V8 (V8): v5.3.0 (candidate)</li>
         <li>SpiderMonkey (SM): JavaScript-C50.0a1 </li>
       </ul>
       <p>The code for running these benchmarks is <a href="https://github.com/ducky427/clojurescript-benchmarks">here</a>.</p>
@@ -1615,10 +1612,9 @@
 
 
     <script src="//cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.4/Chart.min.js"></script>
-    <script src="../script.min.js"></script>
-
+    <script src="../../script.min.js"></script>
     <script type="text/javascript">
-      get_data("../quick/20160614.json");
+      process_stats("data.json");
     </script>
   </body>
 </html>
