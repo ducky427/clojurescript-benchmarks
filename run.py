@@ -42,13 +42,16 @@ def runProcess(exe):
 def compile(cljs_version):
     os.environ["CLJS_VERSION"] = cljs_version
     cmd = 'lein build'
+    start = time.time()
     for line in runProcess(cmd):
         if line:
             print line
+    end = time.time()
+    return end - start
 
 metrics = ["mean", "deviation", "moe", "rme", "sem"]
 
-def benchmark(writer, version):
+def benchmark(writer, version, compile_time):
     engine = None
     section = None
     file_size = os.path.getsize('resources/public/js/compiled/bench.js')
@@ -65,7 +68,7 @@ def benchmark(writer, version):
             assert section is not None, "No section found!"
             try:
                 title, stats = get_stats(line)
-                writer.writerow([version, file_size, engine, section, title] + [stats.get(m) for m in metrics])
+                writer.writerow([version, compile_time, file_size, engine, section, title] + [stats.get(m) for m in metrics])
             except Exception as e:
                 traceback.print_exc()
         else:
@@ -75,13 +78,13 @@ def main(writer):
     num_versions = len(versions)
     for i, v in enumerate(versions):
         print "Running: {0} ({1} of {2})".format(v, (i+1), num_versions)
-        compile(v)
-        benchmark(writer, v)
+        compile_time = compile(v)
+        benchmark(writer, v, compile_time)
 
 if __name__ == '__main__':
     filename = 'data_{0}.csv'.format(time.strftime("%Y%m%d_%H%M%S"))
     with open(filename, 'wb') as f:
         writer = csv.writer(f)
-        writer.writerow(["Version", "FileSize" ,"Engine", "Section", "Name",
+        writer.writerow(["Version", "CompileTime", "FileSize" ,"Engine", "Section", "Name",
                          "Mean", "Deviation", "MOE", "RME", "SEM"])
         main(writer)
