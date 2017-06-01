@@ -22,7 +22,7 @@ function left_pad(s) {
 function get_ver(x) {
   var parts = x.split('.')
     .map(function(x) {
-      return left_pad(parseInt(x))
+      return left_pad(x);
     });
   return parts.join("-");
 }
